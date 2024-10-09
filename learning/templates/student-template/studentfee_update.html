@@ -1,0 +1,381 @@
+{% extends 'student-template/student_sidebar.html' %}
+{% block main_content %}
+
+<html>
+<head>
+    <title>Student Fee Payment Form</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    
+    <style>
+        body {
+            /* background-color: #f8f9fa; */
+            background:linear-gradient(#E3F4F4, white);;
+
+        }
+        .container {
+            padding: 20px;
+            border-radius: 8px;
+            margin: auto;
+            height: 700px;
+        }
+        .container .grid {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 10px 0;
+        }
+        .container .form-group {
+            flex: 1;
+            margin: 0 10px;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+ h2 {
+            text-align: center;
+            margin-bottom: 50px;
+            color: white; /* Set the text color to white */
+            background-color: #468585; /* Set the background color */
+            padding: 15px;
+            border-radius: 8px;
+        }
+        label {
+            font-weight: bold; 
+            color: black;
+        }
+        input {
+            color: black;
+        }
+        #loading {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background: rgba(255, 255, 255, 0.8);
+        }
+        #loading .spinner-border {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+    </style>     
+
+</head>
+<body>
+    <div id="loading">
+        <div class="spinner-border text-primary" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Student Fee Form</h2>  
+        <form id="paymentForm" method="post" action="/studentpayfee_update/{{ u.id }}" onsubmit="return handleRazorpayPayment(event)">
+            {% csrf_token %}
+            
+            <div class="grid">
+                <label for="amount">Amount:</label>
+                <input type="text" class="form-control" id="amount" name="amount" value="{{ u.amount }}" readonly>
+            </div>
+
+            <div class="grid">
+                <label for="balance">Balance:</label>
+                <input type="text" class="form-control" id="balance" name="balance" readonly>
+            </div>
+
+            <div class="grid">
+                <div class="form-group">
+                    <label for="amountpaid">Amount paid:<span class="text-danger">*</span></label>        
+                    <input type="number" step="0.01" class="form-control" id="amountpaid" name="amountpaid" oninput="calculateBalanceAndValidateForm()">
+                    <div id="amountpaid-error" class="text-danger"></div>
+                </div>  
+                
+                <div class="form-group">    
+                    <label for="term1">Term1:</label>   
+                    <input type="text" class="form-control" id="term1" name="term1" value="{{ u.term1 }}" readonly>
+                </div>
+            </div>  
+
+            <div class="grid">
+                <div class="form-group"> 
+                    <label for="term2">Term2:</label>
+                    <input type="text" class="form-control" id="term2" name="term2" value="{{ u.term2 }}" readonly> 
+                </div>              
+                
+                <div class="form-group">
+                    <label for="term3">Term3:</label> 
+                    <input type="text" class="form-control" id="term3" name="term3" value="{{ u.term3 }}" readonly>  
+                </div>
+            </div>
+
+            <div class="grid">
+                <div class="form-group">
+                    <label for="term4">Term4:</label> 
+                    <input type="text" class="form-control" id="term4" name="term4" value="{{ u.term4 }}" readonly>  
+                </div>
+            
+                <div class="form-group">
+                    <label for="term5">Term5:</label> 
+                    <input type="text" class="form-control" id="term5" name="term5" value="{{ u.term5 }}" readonly>  
+                </div>
+            </div>
+
+            <div class="grid">
+                <div class="form-group"> 
+                    <label for="term6">Term6:</label>
+                    <input type="text" class="form-control" id="term6" name="term6" value="{{ u.term6 }}" readonly> 
+                </div>              
+                
+                <div class="form-group">
+                    <label for="term7">Term7:</label> 
+                    <input type="text" class="form-control" id="term7" name="term7" value="{{ u.term7 }}" readonly>  
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="term8">Term8:</label> 
+                <input type="text" class="form-control" id="term8" name="term8" value="{{ u.term8 }}" readonly>  
+            </div>
+
+            <br>
+            <div class="col text-center">
+                <button type="submit" class="btn btn-primary">Submit Payment</button>
+            </div>
+        </form>                           
+    </div>  
+
+    <script>
+    $(document).ready(function() {
+        hideEmptyTerms();
+        calculateBalance();
+    });
+
+    function hideEmptyTerms() {
+        const terms = [1, 2, 3, 4, 5, 6, 7, 8];
+        terms.forEach(term => {
+            const termValue = parseFloat($(`#term${term}`).val()) || 0;
+            if (termValue === 0) {
+                $(`#term${term}`).closest('.form-group').hide();
+            }
+        });
+    }
+
+    $(document).ready(function() {
+        calculateBalance();
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        calculateBalance(); // Initialize balance calculation on page load
+
+        var amountPaidInput = document.getElementById('amountpaid'); // Add event listener for amountpaid input
+        amountPaidInput.addEventListener('input', function () {
+            calculateBalanceAndValidateForm();
+        });
+
+        var isUserInteracted = false; // Initialize validation only after user interaction
+        amountPaidInput.addEventListener('blur', function () {
+            isUserInteracted = true;
+            validateAmountPaid();
+        });
+
+        var paymentForm = document.getElementById('paymentForm'); // Check on form submit to ensure validation message shows correctly
+        paymentForm.addEventListener('submit', function () {
+            if (!isUserInteracted) {
+                validateAmountPaid();
+            }
+        });
+    });
+
+    function calculateBalanceAndValidateForm() {
+        calculateBalance();
+        validateAmountPaid();
+    }
+
+    function calculateBalance() {
+        var term1 = parseFloat("{{ u.term1 }}") || 0;
+        var term2 = parseFloat("{{ u.term2 }}") || 0;
+        var term3 = parseFloat("{{ u.term3 }}") || 0;
+        var term4 = parseFloat("{{ u.term4 }}") || 0;
+        var term5 = parseFloat("{{ u.term5 }}") || 0;
+        var term6 = parseFloat("{{ u.term6 }}") || 0;
+        var term7 = parseFloat("{{ u.term7 }}") || 0;
+        var term8 = parseFloat("{{ u.term8 }}") || 0;
+
+        var totalAmount = term1 + term2 + term3 + term4 + term5 + term6 + term7 + term8;
+        var amountpaid = parseFloat(document.getElementById('amountpaid').value) || 0;
+        var balance = totalAmount - amountpaid;
+        document.getElementById('balance').value = balance.toFixed(2);
+    }
+
+    function validateAmountPaid() {
+        var amountPaidInput = document.getElementById('amountpaid');
+        var amountpaid = parseFloat(amountPaidInput.value);
+        var term1 = parseFloat("{{ u.term1 }}") || 0;
+        var term2 = parseFloat("{{ u.term2 }}") || 0;
+        var term3 = parseFloat("{{ u.term3 }}") || 0;
+        var term4 = parseFloat("{{ u.term4 }}") || 0;
+        var term5 = parseFloat("{{ u.term5 }}") || 0;
+        var term6 = parseFloat("{{ u.term6 }}") || 0;
+        var term7 = parseFloat("{{ u.term7 }}") || 0;
+        var term8 = parseFloat("{{ u.term8 }}") || 0;
+
+        var totalAmount = term1 + term2 + term3 + term4 + term5 + term6 + term7 + term8;
+
+        const errorDiv = document.getElementById('amountpaid-error');
+
+        if (isNaN(amountpaid) || amountpaid === "") {
+            errorDiv.textContent = "Please fill out this field.";
+            amountPaidInput.setCustomValidity('Invalid amount');
+            return false;
+        } else if (amountpaid < 0) {
+            errorDiv.textContent = "Amount paid cannot be negative.";
+            amountPaidInput.setCustomValidity('Invalid amount');
+            return false;
+        } else if (amountpaid <= 0) {
+            errorDiv.textContent = "Amount paid must be greater than zero.";
+            amountPaidInput.setCustomValidity('Invalid amount');
+            return false;
+        } else if (amountpaid > totalAmount) {
+            errorDiv.textContent = "Amount paid cannot exceed the total due amount.";
+            amountPaidInput.setCustomValidity('Invalid amount');
+            return false;
+        } else {
+            errorDiv.textContent = ""; // Clear error message
+            amountPaidInput.setCustomValidity('');
+            return true;
+        }
+    }
+
+    function handleRazorpayPayment(event) {
+        event.preventDefault();
+        
+        var amount = parseFloat(document.getElementById('amountpaid').value) * 100; // Convert to paisa
+        var options = {
+            "key": "rzp_test_CYP5WMTOT2Biro", // Enter the Key ID generated from the Dashboard  rzp_test_ea8lyJpw9mocE5
+            "amount": amount,
+            "currency": "INR",
+            "name": "LMS",
+            "description": "Fee Payment",
+            "handler": function (response){
+                document.getElementById('paymentForm').appendChild(createHiddenInput('payment_id', response.razorpay_payment_id));
+                document.getElementById('paymentForm').appendChild(createHiddenInput('order_id', response.razorpay_order_id));
+                document.getElementById('paymentForm').appendChild(createHiddenInput('status', 'captured'));
+                document.getElementById('paymentForm').submit();
+            },
+            "prefill": {
+                "name": "{{ u.first_name }}",
+                "email": "{{ request.user.email }}"
+            },
+            "theme": {
+                "color": "#3399cc"
+            }
+        };
+        var rzp1 = new Razorpay(options);
+        rzp1.open();
+    }
+
+    function createHiddenInput(name, value) {
+        var input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = name;
+        input.value = value;
+        return input;
+    }
+    function validateAmountPaid() {
+    var amountPaidInput = document.getElementById('amountpaid');
+    var amountpaid = amountPaidInput.value;
+    var term1 = parseFloat("{{ u.term1 }}") || 0;
+    var term2 = parseFloat("{{ u.term2 }}") || 0;
+    var term3 = parseFloat("{{ u.term3 }}") || 0;
+    var term4 = parseFloat("{{ u.term4 }}") || 0;
+    var term5 = parseFloat("{{ u.term5 }}") || 0;
+    var term6 = parseFloat("{{ u.term6 }}") || 0;
+    var term7 = parseFloat("{{ u.term7 }}") || 0;
+    var term8 = parseFloat("{{ u.term8 }}") || 0;
+
+    var totalAmount = term1 + term2 + term3 + term4 + term5 + term6 + term7 + term8;
+
+    const errorDiv = document.getElementById('amountpaid-error');
+
+    // Check if the first digit is zero
+    if (amountpaid.startsWith('0') && amountpaid.length > 1 && amountpaid[1] !== '.') {
+        errorDiv.textContent = "Invalid amount: Cannot start with zero unless it's a decimal (e.g., 0.5).";
+        amountPaidInput.setCustomValidity('Invalid amount');
+        return false;
+    } else if (isNaN(parseFloat(amountpaid)) || amountpaid === "") {
+        errorDiv.textContent = "Please fill out this field.";
+        amountPaidInput.setCustomValidity('Invalid amount');
+        return false;
+    } else if (parseFloat(amountpaid) <= 0) {
+        errorDiv.textContent = "Amount paid must be greater than zero.";
+        amountPaidInput.setCustomValidity('Invalid amount');
+        return false;
+    } else if (parseFloat(amountpaid) > totalAmount) {
+        errorDiv.textContent = "Amount paid cannot exceed the total due amount.";
+        amountPaidInput.setCustomValidity('Invalid amount');
+        return false;
+    } else {
+        errorDiv.textContent = ""; // Clear error message
+        amountPaidInput.setCustomValidity('');
+        return true;
+    }
+}
+
+// Ensure that validation is triggered on each input event
+document.getElementById('amountpaid').addEventListener('input', validateAmountPaid);
+
+function validateAmountPaid() {
+    var amountPaidInput = document.getElementById('amountpaid');
+    var amountpaid = amountPaidInput.value;
+    var term1 = parseFloat("{{ u.term1 }}") || 0;
+    var term2 = parseFloat("{{ u.term2 }}") || 0;
+    var term3 = parseFloat("{{ u.term3 }}") || 0;
+    var term4 = parseFloat("{{ u.term4 }}") || 0;
+    var term5 = parseFloat("{{ u.term5 }}") || 0;
+    var term6 = parseFloat("{{ u.term6 }}") || 0;
+    var term7 = parseFloat("{{ u.term7 }}") || 0;
+    var term8 = parseFloat("{{ u.term8 }}") || 0;
+
+    var totalAmount = term1 + term2 + term3 + term4 + term5 + term6 + term7 + term8;
+
+    const errorDiv = document.getElementById('amountpaid-error');
+
+    // Check if the first digit is zero
+    if (amountpaid.startsWith('0') && amountpaid.length > 1 && amountpaid[1] !== '.') {
+        errorDiv.textContent = "Invalid amount: Cannot start with zero unless it's a decimal (e.g., 0.5).";
+        amountPaidInput.setCustomValidity('Invalid amount');
+        return false;
+    } else if (isNaN(parseFloat(amountpaid)) || amountpaid === "") {
+        errorDiv.textContent = "Please fill out this field.";
+        amountPaidInput.setCustomValidity('Invalid amount');
+        return false;
+    } else if (parseFloat(amountpaid) <= 0) {
+        errorDiv.textContent = "Amount paid must be greater than zero.";
+        amountPaidInput.setCustomValidity('Invalid amount');
+        return false;
+    } else if (parseFloat(amountpaid) > totalAmount) {
+        errorDiv.textContent = "Amount paid cannot exceed the total due amount.";
+        amountPaidInput.setCustomValidity('Invalid amount');
+        return false;
+    } else if (amountpaid.includes('.') && amountpaid.split('.')[1].length > 2) {
+        errorDiv.textContent = "Only two decimal places are allowed.";
+        amountPaidInput.setCustomValidity('Invalid amount');
+        return false;
+    } else {
+        errorDiv.textContent = ""; // Clear error message
+        amountPaidInput.setCustomValidity('');
+        return true;
+    }
+}
+
+</script>
+</body>
+</html> 
+{% endblock main_content %}

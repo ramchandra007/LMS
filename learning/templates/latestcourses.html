@@ -1,0 +1,89 @@
+{% extends 'navheader.html' %}
+
+{% block main_content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Latest Courses</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.min.js" integrity="sha384-Rx+T1VzGupg4BHQYs2gCW9It+akI2MM/mndMCy36UVfodzcJcF0GGLxZIzObiEfa" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+         @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+        body{
+            background-color:white;
+        }
+         .head{
+            margin: 10px 0;
+            padding: 5px 0;
+            background-color:  #7a6ad8;
+            align-items: center;
+        }
+         .head h2{
+            text-align: center;
+            text-transform: uppercase;
+            font-family: poppins;
+            font-weight: bold;
+            letter-spacing: 2px;
+            color: white;
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .card {
+            width: 300px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease-in-out;
+            background-color: #7b6ad83d;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: (0 8px 16px #7a6ad8);
+        }
+        .card-body h3{
+            font-family: poppins;
+            text-align: center;
+            text-transform: uppercase;
+            font-size: medium;
+            color: #7a6ad8;
+            font-weight: bold;
+        }
+        .card-body p{
+            font-family: poppins;
+            text-align: center;
+            color: rgb(104, 102, 102);
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="head"><h2>Latest Courses</h2></div>
+    <br>
+    <div class="container">
+        {% for i in courses %}
+        <div class="card">
+            <div class="card-body">
+              <h3>{{ i.title }}</h3>
+              <p>{{ i.description }}</p>
+            </div>
+          </div>
+        {% endfor %}
+    </div>
+
+</body>
+</html>
+{% include 'footer.html' %}
+{% endblock main_content %}

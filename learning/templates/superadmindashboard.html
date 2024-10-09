@@ -1,0 +1,272 @@
+{% extends 'hom4.html' %}
+{% block main_content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SuperAdmin Dashboard</title>
+    <style>
+    .dashboard {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+.section {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    gap: 50px;
+    max-width: 100%;
+    width: 300px;
+    height: 150px;
+    background-color: #f4f4f4;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.section i {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    background-color: #978ec9a6;
+    color: white;
+    border-radius: 50%;
+    font-size: 24px;
+    margin-right: 10px;
+}
+    .section h3 {
+    margin: 0;
+    font-weight: 600;
+    font-size: 18px;
+    color:rgb(66, 81, 102);
+    text-align: center;
+}
+.section span{
+    text-align: center;
+    font-weight: 500;
+    color: rgb(66, 81, 102);
+}
+.section:nth-child(1) i {
+    background-color:rgb(250, 90, 125) ;
+    color: white;
+}
+.section:nth-child(2) i {
+    background-color: rgb(255, 148, 122);
+    color: white;
+}
+.section:nth-child(3) i {
+    background-color: rgb(60, 216, 86);
+    color: white;
+}
+#school{
+    background-color: rgb(255, 226, 229);
+}
+#student{
+    background-color: rgb(255, 244, 222);
+}            
+#teacher{
+    background-color: rgb(220, 252, 231);
+}
+.col-md-12 h3{
+    text-align: center;
+    font-weight: 600;
+    color: #008080;
+    text-transform: uppercase;
+}
+.col-md-12 p{
+    font-weight: 600;
+}
+.col-md-12 h3{
+    font-size: 18px;
+    text-align: center;
+}
+@import url(https://fonts.googleapis.com/css?family=Lato:700);
+
+/* Ensure the parent container is relatively positioned */
+.col-md-12 {
+    position: relative; /* Ensure the ribbon is positioned relative to this container */
+    background-color: rgba(173, 216, 230, 0.633);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    padding: 20px; /* Add some padding if needed */
+}
+
+.ribbon {
+    position: absolute;
+    width: 150px; /* Adjust width if needed */
+    height: 150px; /* Adjust height if needed */
+    overflow: hidden;
+    top: -10px;
+    right: -10px;
+}
+
+.ribbon::before,
+.ribbon::after {
+    position: absolute;
+    z-index: -1;
+    content: '';
+    display: block;
+    border: 5px solid #2980b9;
+}
+
+.ribbon span {
+    position: absolute;
+    display: block;
+    width: 225px;
+    padding: 15px 0;
+    background-color: #3498db;
+    box-shadow: 0 5px 10px rgba(0,0,0,.1);
+    color: #fff;
+    font: 700 18px/1 'Lato', sans-serif;
+    text-shadow: 0 1px 1px rgba(0,0,0,.2);
+    text-transform: uppercase;
+    text-align: center;
+    transform: rotate(45deg);
+    left: -25px; /* Adjust positioning */
+    top: 30px;   /* Adjust positioning */
+}
+
+/* Adjustments for top-right ribbon */
+.ribbon-top-right::before,
+.ribbon-top-right::after {
+    border-top-color: transparent;
+    border-right-color: transparent;
+}
+
+.ribbon-top-right::before {
+    top: 0;
+    left: 0;
+}
+
+.ribbon-top-right::after {
+    bottom: 0;
+    right: 0;
+}
+
+.profile-logo img {
+    cursor: pointer;
+}
+.card-body {
+    text-align: center;
+}
+
+.card-title {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.card-text {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+}
+
+
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <br>
+        <div class="dashboard">
+            <div class="section" id="school">
+                <div class="left">
+                    <i class="fas fa-school"></i>
+                </div>
+                <div class="right">
+                    <h3 id="schools-count">0</h3>
+                    <span>Schools</span>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="ribbon ribbon-top-right"><span>NEW</span></div>
+                <br>
+                <h3>Latest School Details</h3>
+                <p id="registration-number"></p>
+                <p id="school-name">Loading...</p>
+                <p id="school-address"></p>
+            </div>
+        </div>
+    </div>
+    <script>
+                    function countUp(element, end, duration) {
+                        let start = 0;
+                        const stepTime = Math.abs(Math.floor(duration / end));
+                        const timer = setInterval(function() {
+                            start += 1;
+                            element.textContent = start;
+                            if (start === end) {
+                                clearInterval(timer);
+                            }
+                        }, stepTime);
+                    }
+                    document.addEventListener('DOMContentLoaded', function() {
+                        fetch('/api/teacher-count/')
+                            .then(response => response.json())
+                            .then(data => {
+                                const teacherCountElement = document.getElementById('teachers-count');
+                                if (teacherCountElement) {
+                                    countUp(teacherCountElement, data.count, 2000);
+                                }
+                            })
+                            .catch(error => console.error('Error fetching teacher count:', error));
+                
+                        // Fetch school count from the API
+                        fetch('/api/school-count/')
+                            .then(response => response.json())
+                            .then(data => {
+                                const schoolCountElement = document.getElementById('schools-count');
+                                if (schoolCountElement) {
+                                    countUp(schoolCountElement, data.count, 2000); // Adjust duration as needed
+                                }
+                            })
+                            .catch(error => console.error('Error fetching school count:', error));
+                
+                        // Fetch student count from the API
+                        fetch('/api/student-count/')
+                            .then(response => response.json())
+                            .then(data => {
+                                const studentCountElement = document.getElementById('students-count');
+                                if (studentCountElement) {
+                                    countUp(studentCountElement, data.count, 2000); // Adjust duration as needed
+                                }
+                            })
+                            .catch(error => console.error('Error fetching student count:', error));
+                    });
+
+                    async function getLatestSchool() {
+    try {
+        const response = await fetch('/latest-school/');
+        if (!response.ok) {
+            throw new Error('Failed to fetch latest school.');
+        }
+        const data = await response.json();
+
+        if (!data || Object.keys(data).length === 0) {
+            document.getElementById('school-name').textContent = 'Currently, no schools available';
+            document.getElementById('registration-number').textContent = '';
+            document.getElementById('school-address').textContent = '';
+        } else {
+            console.log('Latest School:', data);
+            document.getElementById('school-name').textContent = `Organization Name: ${data.organizationname}`;
+            document.getElementById('registration-number').textContent = `Registration Number: ${data.registrationno}`;
+            document.getElementById('school-address').textContent = `Address: ${data.address}`;
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        document.getElementById('school-name').textContent = 'Error fetching school data.';
+        document.getElementById('registration-number').textContent = '';
+        document.getElementById('school-address').textContent = '';
+    }
+}
+window.addEventListener('load', getLatestSchool);
+</script>
+</body>
+</html>
+{% endblock main_content %}

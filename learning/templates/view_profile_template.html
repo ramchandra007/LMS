@@ -1,0 +1,113 @@
+{% extends 'hom4.html' %}
+{% load static %}
+{% block page_title %}{{ page_title }}{% endblock page_title %}
+
+{% block main_content %}
+<style>
+    .organization-profile {
+        width: 90%;
+        margin: auto;
+        background: linear-gradient(135deg, rgba(112, 106, 216, 0.8), rgba(100, 100, 255, 0.8));
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        padding: 15px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+        color: white; /* Updated to white text */
+    }
+
+    th {
+        background-color: rgba(112, 106, 216, 0.9);
+        color: white;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+    td img {
+        width: 100px;
+        height: auto;
+        border-radius: 10px;
+        transition: transform 0.2s;
+    }
+
+    td img:hover {
+        transform: scale(1.2);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    tr:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    table, th, td {
+        animation: fadeIn 0.5s ease-in-out;
+    }
+
+    .ai-effect {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .ai-effect::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 200%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: all 0.5s ease-in-out;
+    }
+
+    .ai-effect:hover::before {
+        left: 100%;
+        transition: all 0.5s ease-in-out;
+    }
+</style>
+
+<div class="organization-profile">
+    <table>
+        <tr>
+            <th>Name of the Organization</th>
+            <th>Registered Number</th>
+            <th>Name of the Admin</th>
+            <th>Email</th>
+            <th>Contact Number</th>
+            <th>Total Strength</th>
+            <th>Address</th>
+            <th>Profile Pic</th>
+        </tr>
+        <tr>
+            <td>{{ organization_profile.organizationname }}</td>
+            <td>{{ organization_profile.registrationno }}</td>
+            <td>{{ organization_profile.first_name }} {{ organization_profile.last_name }}</td>
+            <td>{{ organization_profile.email }}</td>
+            <td>{{ organization_profile.phoneno }}</td>
+            <td>{{ organization_profile.strength }}</td>
+            <td>{{ organization_profile.address }}</td>
+            <td><img src="{{ organization_profile.image1.url }}" alt="Profile Pic"></td>
+        </tr>
+    </table>
+</div>
+{% endblock main_content %}

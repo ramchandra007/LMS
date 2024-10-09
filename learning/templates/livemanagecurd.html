@@ -1,0 +1,177 @@
+{% extends 'hom4.html' %}
+{% block page_title %}{{page_title}}{% endblock page_title %}
+
+{% block main_content %}
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" integrity="sha512-...." crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>Employee Monitoring List</title>
+
+    <style>
+        body {
+            background-color: WhiteSmoke;
+            display: block;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: rgba(112, 106, 216, 0.8);
+            color: white;
+            text-align: center;
+        }
+        td {
+            background-color: #f2f2f2;
+        }
+        .btn-custom {
+            margin-top: 10px;
+            margin-bottom: 20px;
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+        .btn-custom:hover {
+            background-color: #0056b3;
+            color: white;
+            text-decoration: none;
+        }
+        .btn-action {
+            font-size: 20px;
+            border: none;
+            background: none;
+        }
+        .btn-delete:hover {
+            animation: shake 0.5s;
+            animation-iteration-count: 2;
+        }
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+            100% { transform: translateX(0); }
+        }
+    </style>
+
+    <center>
+        <h2>Live Class Management 1</h2>
+    </center>
+    <div class="table-responsive">
+        <table class="table">
+            <tr>
+                <th>Image 1</th>
+                <th>Heading</th>
+                <th>Content</th>
+                <th>Update</th>
+                <th>Delete</th>
+            </tr>
+            {% for i in livemanagecurd %}
+                <tr>
+                    {% if i.image1 %}
+                        <td><img src="{{i.image1.url}}" style="width:250px; height:250px;"></td>
+                    {% else %}
+                        <td>No image</td>
+                    {% endif %}
+                    <td>{{i.heading}}</td>
+                    <td>{{i.content}}</td>
+                    <td>
+                        <form action="/livecontentedit/{{i.id}}" method="get">
+                            <button type="submit" style="color: green;" class="btn-action"><i class="fa fa-edit"></i> Update</button>
+                        </form>
+                    </td>
+                    <td>
+                        <form action="/livecontentdelete/{{i.id}}" method="get">
+                            <button type="submit" style="color: red;" class="btn-action btn-delete"><i class="fa fa-trash-o"></i> Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <form action="/livecontentinsert/" method="get">
+        <button type="submit" class="btn btn-custom">Add New Element</button>
+    </form>
+    <br><br>
+
+    <center>
+        <h2>Live Class Management 2</h2>
+    </center>
+    <div class="table-responsive">
+        <table class="table">
+            <tr>
+                <th>Image 2</th>
+                <th>Update</th>
+                <th>Delete</th>
+            </tr>
+            {% for i in livecarouselcurd %}
+                <tr>
+                    {% if i.image2 %}
+                        <td><img src="{{i.image2.url}}" style="width:250px; height:250px;"></td>
+                    {% else %}
+                        <td>No image</td>
+                    {% endif %}
+                    <td>
+                        <form action="/livecarouseledit/{{i.id}}" method="get">
+                            <button type="submit" style="color: green;" class="btn-action"><i class="fa fa-edit"></i> Update</button>
+                        </form>
+                    </td>
+                    <td>
+                        <form action="/livecarouseldelete/{{i.id}}" method="get">
+                            <button type="submit" style="color: red;" class="btn-action btn-delete"><i class="fa fa-trash-o"></i> Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <form action="/livecarouselinsert/" method="get">
+        <button type="submit" class="btn btn-custom">Add New Element</button>
+    </form>
+    <br><br>
+
+    <center>
+        <h2>Live Class Management 3</h2>
+    </center>
+    <div class="table-responsive">
+        <table class="table">
+            <tr>
+                <th>Image 3</th>
+                <th>Field</th>
+                <th>Update</th>
+                <th>Delete</th>
+            </tr>
+            {% for i in liveclasscardcurd %}
+                <tr>
+                    {% if i.image3 %}
+                        <td><img src="{{i.image3.url}}" style="width:250px; height:250px;"></td>
+                    {% else %}
+                        <td>No image</td>
+                    {% endif %}
+                    <td>{{i.field}}</td>
+                    <td>
+                        <form action="/livecardedit/{{i.id}}" method="get">
+                            <button type="submit" style="color: green;" class="btn-action"><i class="fa fa-edit"></i> Update</button>
+                        </form>
+                    </td>
+                    <td>
+                        <form action="/livecarddelete/{{i.id}}" method="get">
+                            <button type="submit" style="color: red;" class="btn-action btn-delete"><i class="fa fa-trash-o"></i> Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <form action="/livecardinsert/" method="get">
+        <button type="submit" class="btn btn-custom">Add New Element</button>
+    </form>
+
+{% endblock main_content %}

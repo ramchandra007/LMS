@@ -1,0 +1,185 @@
+{% extends 'hom4.html' %}
+{% block main_content %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Messages</title>
+    <style>
+        /* Import the desired font */
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+        body, html {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            background-color: #007bff;
+            color: #ffffff;
+            font-size: 24px;
+            padding: 20px;
+            text-align: center;
+            margin: 0;
+            border-radius: 8px 8px 0 0;
+            transition: background-color 0.3s ease;
+        }
+
+        h1:hover {
+            background-color: #0056b3;
+        }
+
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+           
+            justify-content: space-between;
+           
+           
+        }
+
+        li {
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 8px;
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+            width: calc(33.333% - 10px); /* Adjusted card width */
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        li:nth-child(even) {
+            background-color: #f8f8f8;
+        }
+
+        li:hover {
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            transform: translateY(-5px);
+        }
+
+        .message-info {
+            display: flex;
+            align-items: center;
+
+            color: #666;
+            width: 800px;
+           
+        }
+
+        .message-info i {
+            font-size: 18px;
+            color: #007bff;
+            
+        }
+
+        h4 {
+            color: #007bff;
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 18px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #333;
+        }
+
+        .reply-button {
+            background-color: #007bff;
+            border: none;
+            color: #ffffff;
+            cursor: pointer;
+            display: inline-block;
+            font-size: 14px;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            align-self: flex-end;
+        }
+
+        .reply-button:hover {
+            background-color: #b4f2bb;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 20px;
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 20px;
+                padding: 15px;
+            }
+
+            h4 {
+                font-size: 20px;
+            }
+
+            p {
+                font-size: 16px;
+            }
+
+            .reply-button {
+                font-size: 12px;
+                padding: 8px 16px;
+            }
+
+            ul {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            li {
+                width: 100%;
+            }
+        }
+    </style>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Contact Messages</h1><br>
+        <ul>
+            {% for message in contact_messages %}
+            <li>
+                <h4>{{ message.name }}</h4>
+                <p class="message-info"><i class="fas fa-envelope"></i> {{ message.email }}</p>
+                <p class="message-info"><i class="fas fa-tag"></i> {{ message.subject }}</p>
+                <p class="message-info"><i class="fas fa-comment"></i> {{ message.message }}</p>
+                <p class="message-info"><i class="fas fa-clock"></i> {{ message.timestamp }}</p>
+                <a href="{% url 'reply_message' message.id %}" class="reply-button">Reply</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>
+{% endblock main_content %}

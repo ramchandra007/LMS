@@ -1,0 +1,215 @@
+{% extends 'student-template/student_sidebar.html' %}
+{% block main_content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #DDF5F7;
+        }
+        .wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+        .sidebar {
+            width: 250px;
+            background-color: #343a40;
+            color: #fff;
+            padding: 20px;
+        }
+        .sidebar a {
+            color: #fff;
+            text-decoration: none;
+            display: block;
+            padding: 10px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+        }
+        .sidebar a:hover {
+            background-color: #495057;
+        }
+        .content {
+            flex: 1;
+            padding: 20px;
+        }
+        .invoice-box {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(210, 204, 204, 0.15);
+            border-radius: 10px;
+            background-color: #fff;
+        }
+        .card-body {
+            background: linear-gradient(135deg, #9eb3be, #00b4d8);
+            background-blend-mode: multiply;
+            color: white;
+        }
+        .invoice-box table {
+            width: 100%;
+            line-height: inherit;
+            text-align: left;
+            border-collapse: collapse;
+        }
+        .invoice-box table td {
+            padding: 8px;
+            vertical-align: top;
+            color: rgb(8, 1, 1);
+        }
+        .invoice-box table tr td:nth-child(2) {
+            text-align: right;
+        }
+        .invoice-box table tr.top table td {
+            padding-bottom: 20px;
+        }
+        .invoice-box table tr.information table td {
+            padding-bottom: 20px;
+        }
+        .invoice-box table tr.heading td {
+            background: #444;
+            color: white;
+            border-bottom: 1px solid #ddd;
+            font-weight: bold;
+        }
+        .invoice-box table tr.details td {
+            padding-bottom: 20px;
+        }
+        .invoice-box table tr.item td {
+            border-bottom: 1px solid #eee;
+        }
+        .invoice-box table tr.item.last td {
+            border-bottom: none;
+        }
+        .invoice-box table tr.total td:nth-child(2) {
+            border-top: 2px solid #dd5454;
+            font-weight: bold;
+            color: rgb(138, 7, 7);
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #777;
+        }
+        .btn-back {
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            border-color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div >
+            <ul class="nav flex-column">
+                {% for item in k %}
+                    <li class="nav-item">
+                        <a href="{{ item.url }}">{{ item.name }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="content">
+            <!-- Invoice Content -->
+            <div class="invoice-box">
+                <div class="card">
+                    <div class="card-body">
+                        <table cellpadding="0" cellspacing="0">
+                            <tr class="top">
+                                <td colspan="2">
+                                    <table>
+                                        <tr>
+                                            <td>
+                                                Paid To: <br>
+                                                Admin Name: <span style="font-size: 24px; font-weight: bold;">{{ organizationname }}</span><br>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                Payment ID: {{ payment_id }}<br>
+                                                Date of Issue: {{ transaction_date }}<br>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr class="information">
+                                <td colspan="2">
+                                    <table>
+                                        <tr>
+                                            <td>
+                                                Billed To: <br> 
+                                                Student Name: <b>{{ firstname }}</b> <br>
+                                            </td>
+                                            <td>Class: <b>{{ student_class }}</b></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Amount Paid in this Transaction</td>
+                                <td style="font-weight: bold;">{{ amount_paid_transaction }}</td>
+                            </tr>
+                            <tr>
+                                <td>Total Fee Amount</td>
+                                <td>{{ total_amount }}</td>
+                            </tr>
+                            {% if discount_percentage != 0 %}
+                            <tr>
+                                <td>Discount Percentage on fee amount:</td>
+                                <td>{{ discount_percentage }}%</td>
+                            </tr>
+                            {% endif %}
+                            <tr class="heading">
+                                <td>Description of Fees</td>
+                                <td>Amount</td>
+                            </tr>
+                            <tr class="item">
+                                <td>Tuition Fee</td>
+                                <td>{{ discounted_total_amount }}</td>
+                            </tr>
+                            <tr class="item">
+                                <td>Total amount Paid</td>
+                                <td>{{ amt }}</td>
+                            </tr>
+                            <tr class="item">
+                                <td>Remaining Balance</td>
+                                <td>{{ remaining_balance }}</td>
+                            </tr>
+                            <tr class="heading">
+                                <td>Total Amount Due:</td>
+                                <td> {{ remaining_balance }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <form method="post" action="{% url 'download_receipt1' payment_id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary">Download PDF</button>
+                </form>
+
+                <button onclick="history.back()" class="btn btn-secondary btn-back">Back</button>
+
+                <div class="footer">
+                    Developtrees | email @ info@Developtrees.com 
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+{% endblock main_content %}

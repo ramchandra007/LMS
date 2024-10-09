@@ -1,0 +1,394 @@
+{% extends 'admin-template/adminsidebar.html' %}
+{% block main_content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+  <title>Student Fee Details</title>
+  <style>
+    body {
+      background-color: #4b6c8a;
+      font-family: 'Arial', sans-serif;
+      color: #333;
+    }
+
+    .dropdown .dropdown-toggle {
+      background-color: #f1e7e7;
+      color: #0e0d0d;
+      border-radius: 25px;
+      transition: background-color 0.3s;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .dropdown .dropdown-toggle:hover {
+      background-color: #777a7e;
+    }
+
+    .student-search {
+      position: relative;
+      width: 100%;
+      max-width: 350px;
+      height: 38px;
+      background-color: #f1e7e7;
+      border-radius: 25px;
+      padding: 0 15px;
+      display: flex;
+      align-items: center;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    #searchInput {
+      border: none;
+      margin-left: 10px;
+      width: 100%;
+      font-size: 14px;
+      background-color: transparent;
+      color: #0c0c0c;
+      outline: none;
+    }
+
+    .table-animated {
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal-content {
+      border-radius: 10px;
+    }
+
+    .search-and-dropdown {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .search-and-dropdown .dropdown {
+      flex: 1 1 auto;
+      min-width: 150px;
+    }
+
+    .search-and-dropdown .student-search {
+      flex: 2 1 auto;
+    }
+
+    .table {
+      background: #131212;
+      border-radius: 20px;
+      border: 1px solid #030303;
+      overflow: hidden;
+    }
+
+    .table thead th {
+      background-color: #10d4d4;
+      color: #0e0d0d;
+      text-align: center;
+      font-weight: bold;
+      border-bottom: 2px solid #ddd;
+    }
+
+    .table tbody tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    .table tbody tr {
+      transition: background-color 0.2s ease;
+    }
+
+    .table tbody tr:hover {
+      background-color: #e6f7ff;
+    }
+
+    .table tbody td {
+      text-align: center;
+      vertical-align: middle;
+      padding: 3px;
+      word-wrap: break-word;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .table tbody td:not(:last-child) {
+      border-right: 1px solid #ddd;
+    }
+
+    .btn-primary {
+      background-color: #007bff;
+      border-color: #007bff;
+      border-radius: 35px;
+      transition: background-color 0.3s, border-color 0.3s;
+    }
+
+    .btn-primary:hover {
+      background-color: #0056b3;
+      border-color: #0056b3;
+    }
+
+    .modal-header {
+      background-color: #303841;
+      color: #fff;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .modal-lg {
+      padding-top: 30px;
+      max-width: 80%;
+    }
+
+    .table-striped tbody tr:nth-of-type(odd) {
+      background-color: #f9f9f9;
+    }
+
+    @media (max-width: 768px) {
+      .table thead {
+        display: none;
+      }
+      .table, .table tbody, .table tr, .table td {
+        display: block;
+        width: 100%;
+      }
+      .table tr {
+        margin-bottom: 10px;
+      }
+      .table td {
+        text-align: right;
+        position: relative;
+        padding-left: 50%;
+      }
+      .table td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 10px;
+        width: 45%;
+        font-weight: bold;
+        text-align: left;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .student-search {
+        width: 100%;
+        max-width: none;
+      }
+
+      .search-and-dropdown {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      #searchInput {
+        font-size: 14px;
+      }
+
+      .modal-dialog {
+        max-width: 90%;
+      }
+    }
+   
+.table tbody td[data-label="Student Name"] {
+  font-weight: bold;
+}
+
+  </style>
+</head>
+<body>
+  <div class="container mt-4">
+    <div class="search-and-dropdown mb-4">
+      <div class="student-search">
+        <input type="text" id="searchInput" oninput="filterStudents()" placeholder="Search for students..">
+      </div>
+      <div class="dropdown">
+        <button class="btn dropdown-toggle" type="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Select Class  
+      </button>
+      <div class="dropdown-menu" aria-labelledby="dropdownMenuLink"> 
+          {% for i in ob %} 
+              <a class="dropdown-item" href="/Fees_std_details/{{ i.student_class }}" onclick="updateDropdownText('Class {{ i.student_class }}')">Class {{ i.student_class }}</a>
+          {% endfor %}
+      </div>
+      
+    </div>
+    
+  
+  <div class="table-responsive">
+    <table id="feeTable" class="table table-bordered table-hover table-animated table-striped">
+      <thead class="table-primary">
+        <tr>
+          <th>Student Name</th>
+          <th>Total Fee</th>
+          <th>Terms</th>
+          <th>Amount Paid</th>
+           <th>Term1</th>
+          <th>Term2</th>
+          <th>Term3</th>
+          <th>Term4</th>
+          <th>Term5</th>
+          <th>Term6</th>
+          <th>Term7</th>
+          <th>Term8</th>
+          <th>Remaining Balance</th>
+          <th>Discount Percentage</th>
+          <th>View Details</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for j in mn %}
+          <tr>
+            <td data-label="Student Name">{{ j.first_name }}</td>  
+            <td data-label="Total Fee">{{ j.amount }}</td>
+            <td data-label="Terms">{{ j.terms }}</td>
+            <td data-label="Amount Paid">{{ j.amountpaid }}</td>
+            <td data-label="Term1">{% if j.term1 == 0 %}Paid{% else %}{{ j.term1 }}{% endif %}</td>
+            <td data-label="Term2">{% if j.term2 == 0 %}Paid{% else %}{{ j.term2 }}{% endif %}</td>
+            <td data-label="Term3">{% if j.term3 == 0 %}Paid{% else %}{{ j.term3 }}{% endif %}</td>
+            <td data-label="Term4">{% if j.term4 == 0 %}Paid{% else %}{{ j.term4 }}{% endif %}</td>
+            <td data-label="Term5">{% if j.term5 == 0 %}Paid{% else %}{{ j.term5 }}{% endif %}</td>
+            <td data-label="Term6">{% if j.term6 == 0 %}Paid{% else %}{{ j.term6 }}{% endif %}</td>
+            <td data-label="Term7">{% if j.term7 == 0 %}Paid{% else %}{{ j.term7 }}{% endif %}</td>
+            <td data-label="Term8">{% if j.term8 == 0 %}Paid{% else %}{{ j.term8 }}{% endif %}</td>
+            <!-- <td data-label="Remaining Balance">{{ j.remaining }}</td> -->
+            <td>{{ j.balance }}</td>
+            <td data-label="Discount Percentage">{{ j.discount_percentage }}%</td>
+            <td data-label="View Details">
+              <button class="btn btn-primary" data-toggle="modal" data-target="#paymentDetailsModal{{ j.id }}">
+                Transaction details
+              </button>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Modals for payment details -->
+  {% for j in mn %}
+    <div class="modal fade" id="paymentDetailsModal{{ j.id }}" tabindex="-1" role="dialog" aria-labelledby="paymentDetailsModalLabel{{ j.id }}" aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="paymentDetailsModalLabel{{ j.id }}">Payment Details for {{ j.first_name }}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <table class="table table-bordered table-striped">
+              <thead>
+                <tr>
+                  <th>Slno </th>
+                  <th>Payment ID</th>
+                  <th>Amount</th>
+                  <th>Created At</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for payment in razorpay_transactions %}
+                  {% if payment.fee_payment.id == j.id %}
+                    <tr>
+                      <td>{{ forloop.counter }}</td> <!-- Display correct order using forloop.counter -->
+                      <td>{{ payment.payment_id }}</td>
+                      <td>{{ payment.amount }}</td>
+                      <td>{{ payment.created_at }}</td>
+                      <td>
+                        <form method="post" action="{% url 'download_receipt' payment.id %}">
+                          {% csrf_token %}
+                          <button type="submit" name="download_receipt" class="btn btn-primary btn-sm">View Receipt</button>
+                        </form>
+                      </td>
+                    </tr>
+                  {% endif %}
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const table = document.getElementById('feeTable');
+    const rows = table.querySelectorAll('tbody tr');
+    const colsToHide = [];
+
+    if (rows.length > 0) {
+        const colCount = rows[0].children.length;
+
+        for (let col = 4; col < colCount - 2; col++) {
+            let shouldHide = true;
+            rows.forEach(row => {
+                const cellValue = row.children[col].innerText.trim();
+                if (cellValue !== '0' && cellValue !== '0.0' && cellValue !== 'None' && cellValue !== 'Paid' && cellValue !== '') {
+                    shouldHide = false;
+                }
+            });
+            if (shouldHide) {
+                colsToHide.push(col);
+            }
+        }
+    }
+
+    if (colsToHide.length > 0) {
+        const headerCells = table.querySelectorAll('thead th');
+        const allRows = table.querySelectorAll('tr');
+
+        colsToHide.forEach(colIndex => {
+            headerCells[colIndex].style.display = 'none';
+            allRows.forEach(row => {
+                row.children[colIndex].style.display = 'none';
+            });
+        });
+    }
+  });
+
+  function filterStudents() {
+    var input, filter, table, rows, name, i;
+    input = document.getElementById("searchInput");
+    filter = input.value.toUpperCase();
+    
+    if (!/^[a-zA-Z]*$/.test(filter)) {
+      alert("Please enter alphabetic characters only.");
+      input.value = input.value.slice(0, -1);
+      return;
+    }
+
+    table = document.querySelector("table");
+    rows = table.getElementsByTagName("tr");
+
+    for (i = 1; i < rows.length; i++) {
+      name = rows[i].getElementsByTagName("td")[0];
+      if (name) {
+        if (name.textContent.toUpperCase().indexOf(filter) > -1) {
+          rows[i].style.display = "";
+        } else {
+          rows[i].style.display = "none";
+        }
+      }
+    }
+  }
+  
+  document.addEventListener('DOMContentLoaded', function() {
+        const selectedClass = sessionStorage.getItem('selectedClass');
+        if (selectedClass) {
+            document.getElementById('dropdownMenuLink').textContent = selectedClass;
+        }
+    });
+
+    function updateDropdownText(selectedClass) {
+        document.getElementById('dropdownMenuLink').textContent = selectedClass;
+        sessionStorage.setItem('selectedClass', selectedClass); // Save the selected class in session storage
+    }
+</script>
+</body>
+</html>
+{% endblock %}

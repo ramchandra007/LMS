@@ -1,0 +1,16 @@
+{% extends 'hom4.html' %}
+{% block main_content %}
+<div>
+                {% for notification in notifications %}
+                    <div class="alert alert-warning">
+                        {{ notification.message }}
+                    </div>
+                {% empty %}
+                    <div class="alert alert-info">
+                        No notifications at this time.
+                    </div>
+                {% endfor %}
+</div>
+
+
+{% endblock main_content %}

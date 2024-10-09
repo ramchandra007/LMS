@@ -1,0 +1,204 @@
+{% extends 'hom4.html' %}
+{% block page_title %}{{page_title}}{% endblock page_title %}
+
+{% block main_content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" integrity="sha512-...." crossorigin="anonymous" />
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<title>employee monitoring List</title>
+
+<style>
+body {
+    background-color: WhiteSmoke;
+    display: block;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #ddd; 
+}
+
+th {
+    background-color: rgba(112, 106, 216, 0.8); 
+    color: white;
+    text-align: center;
+}
+
+td {
+    background-color: #f2f2f2; 
+}
+
+.btn-custom {
+    margin-top: 10px;
+    margin-bottom: 20px;
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-custom:hover {
+    background-color: #0056b3;
+    color: white;
+    text-decoration: none;
+}
+
+.btn-action {
+    font-size: 20px;
+    border: none;
+    background: none;
+}
+
+.btn-delete:hover {
+    animation: shake 0.5s;
+    animation-iteration-count: 2;
+}
+
+@keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    50% { transform: translateX(5px); }
+    75% { transform: translateX(-5px); }
+    100% { transform: translateX(0); }
+}
+
+
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+}
+</style>
+
+<div class="container">
+    <center>
+        <h2>Exam Management 1</h2>
+    </center>
+
+    <div class="table-responsive">
+        <table class="table">
+            <tr>
+                <th>Images</th>
+                <th>Heading</th>
+                <th>Content</th>
+                <th>Update</th>
+                <th>Delete</th>
+            </tr>
+            {% for i in h %}
+            <tr>
+                {% if i.images %}
+                <td><img src="{{i.images.url}}" style="width:250px; height:250px;"></td>
+                {% endif %}
+                <td>{{i.heading}}</td>
+                <td>{{i.content}}</td>
+                <td>
+                    <form action="/examedit/{{i.id}}" method="get">
+                        <button type="submit" style="color: green;" class="btn-action"><i class="fa fa-edit"></i> Update</button>
+                    </form>
+                </td>
+                <td>
+                    <form action="/examdelete1/{{i.id}}" method="get">
+                        <button type="submit" style="color: red;" class="btn-action btn-delete"><i class="fa fa-trash-o"></i> Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <form action="/examinserte/" method="get">
+        <button type="submit" class="btn btn-custom">Add New Element</button>
+    </form>
+
+    <center>
+        <h2>Exam Management 2</h2>
+    </center>
+    <div class="table-responsive">
+        <table class="table">
+            <tr>
+                <th>Image</th>
+                <th>Update</th>
+                <th>Delete</th>     
+            </tr>
+            <!-- {% for i in p %}
+            <tr>
+                {% if i.image %}
+                <td><img src="{{i.image.url}}" style="width:250px; height:125px;"></td>
+                {% endif %}
+                <td><a href="/credit_fee/{{i.id}}"><i class="fas fa-edit" style="color:blue;"></i></a></td>
+                <td><a href="/crdelete_fee/{{i.id}}"><i class="fas fa-trash-alt" style="color:red;"></i></td>
+            </tr>
+            {% endfor %}  
+            {% for i in h2 %} -->
+            <tr>
+                {% if i.images %}
+                <td><img src="{{i.images.url}}" style="width:250px; height:125px;"></td>
+                {% endif %}   
+                <td>
+                    <form action="/examedit2/{{i.id}}" method="get">
+                        <button type="submit" style="color: green;" class="btn-action"><i class="fa fa-edit"></i> Update</button>
+                    </form>
+                </td>
+                <td>
+                    <form action="/examdelete2/{{i.id}}" method="get">
+                        <button type="submit" style="color: red;" class="btn-action btn-delete"><i class="fa fa-trash-o"></i> Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <form action="/examinsert2/" method="get">
+        <button type="submit" class="btn btn-custom">Add New Element</button>
+    </form>
+
+    <center>
+        <h2>Exam Management 3</h2>
+    </center>
+    <div class="table-responsive">
+        <table class="table">
+            <tr>
+                <th>Images</th>
+                <th>Field</th>
+                <th>Update</th>
+                <th>Delete</th>
+            </tr>
+            {% for i in h3 %}
+            <tr>
+                <td><img src="{{i.images.url}}" style="width:250px; height:250px;"></td>
+                <td>{{i.field}}</td>
+                <td>
+                    <form action="/examedit3/{{i.id}}" method="get">
+                        <button type="submit" style="color: green;" class="btn-action"><i class="fa fa-edit"></i> Update</button>
+                    </form>
+                </td>
+                <td>
+                    <form action="/examdelete3/{{i.id}}" method="get">
+                        <button type="submit" style="color: red;" class="btn-action btn-delete"><i class="fa fa-trash-o"></i> Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <form action="/examinsert3/" method="get">
+        <button type="submit" class="btn btn-custom">Add New Element</button>
+    </form>
+</div>
+{% endblock main_content %}

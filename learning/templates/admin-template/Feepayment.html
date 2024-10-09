@@ -1,0 +1,135 @@
+{% extends 'admin-template/adminsidebar.html' %}
+{% block main_content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LMS Dashboard</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+    <!-- Custom Styles -->
+    <style>
+        body {
+            background-image: url('https://t4.ftcdn.net/jpg/05/72/84/19/360_F_572841980_RKOXn7leguu0Cr7as9G0KvKHWYkDWMoq.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-attachment: fixed;
+            color: #f8f9fa; /* Light text color for contrast */
+        }
+
+        
+
+        .dropdown-custom {
+            text-align: center;
+            margin-top: 100px; /* Increased margin for better positioning */
+        }
+
+        .dropdown-custom .dropdown-toggle {
+            border-radius: 5px;
+            background-color: hwb(0 0% 30%); /* Bootstrap primary color */
+            color: #fff;
+            padding: 15px 30px;
+            border: none;
+            font-size: 1.2rem;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .dropdown-custom .dropdown-toggle:hover {
+            background-color: hwb(0 0% 30%); /* Darker shade on hover */
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .dropdown-custom .dropdown-menu {
+            border-radius: 5px;
+            box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
+            font-size: 1.2rem;
+        }
+
+        .dropdown-custom .dropdown-item {
+            color: #343a40;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .dropdown-custom .dropdown-item:hover {
+            background-color: #e9ecef;
+            color: #007bff;
+        }
+
+        @media (max-width: 576px) {
+            .dropdown-custom .dropdown-toggle,
+            .dropdown-custom .dropdown-menu {
+                font-size: 1rem;
+            }
+        }
+        /*  */
+        /* @media (min-width: 768px) {
+            .form-control {
+                width: 50%;
+            }
+        } */
+
+        /* Media query for desktops and mobile devices */
+        /* @media (min-width: 992px) {
+            .form-control {
+                width: 33.33%;
+            }
+        } */
+    </style>
+</head>
+<body>
+    <div class="overlay"></div>
+    <!-- <div class="content-wrapper">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="dropdown-custom">
+                    <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Select Class
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        {% for item in ob %}
+                            <a class="dropdown-item" href="/Fees_std_details/{{ item.student_class }}">{{ item.student_class }}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> -->
+    <div class="row justify-content-center">
+        <div class="col-md-6 d-flex justify-content-start">
+            <div class="dropdown-custom">
+                <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Select Class
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    {% for item in ob %}
+                        <a class="dropdown-item" href="/Fees_std_details/{{ item.student_class }}">{{ item.student_class }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const dropdownButton = document.getElementById('dropdownMenuButton');
+            const dropdownMenu = document.querySelector('.dropdown-menu');
+            
+            function setDropdownWidth() {
+                dropdownMenu.style.width = dropdownButton.offsetWidth + 'px';
+            }
+            
+            setDropdownWidth();
+            window.addEventListener('resize', setDropdownWidth);
+        });
+    </script>
+</body>
+</html>
+{% endblock main_content %}

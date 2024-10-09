@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .table-container {
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            margin-top: 20px;
+            padding: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.9);
+        }
+        h2 {
+            margin-top: 20px;
+        }
+        th {
+            background-color: rgb(181, 241, 231);
+        }
+        .ended {
+            color: #d10d0d;
+        }
+        .event-details {
+            width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: normal;
+        }
+    </style>
+</head>
+<body>
+    <br>
+    <div class="container">
+        <h2>Student Dashboard - {{ student.username }}</h2>
+        
+        <div class="table-container">
+            <h2>Upcoming Meetings</h2>
+            <div class="table-responsive">
+                <table id="upcoming-meetings" class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Subject</th>
+                            <th>Class Name</th>
+                            <th>Date</th>
+                            <th>Start Time</th>
+                            <th>End Time</th>
+                            <th>Event Details</th>
+                            <th>Meeting Link</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for meeting in upcoming_meetings %}
+                        <tr>
+                            <td>{{ meeting.subject_name.name }}</td>
+                            <td>{{ meeting.class_name }}</td>
+                            <td>{{ meeting.meeting_date|date:"Y-m-d" }}</td>
+                            <td>{{ meeting.starttime|time:"h:i A" }}</td>
+                            <td>{{ meeting.endtime|time:"h:i A" }}</td>
+                            <td class="event-details">{{ meeting.event_details }}</td>
+                            <td><a href="{{ meeting.get_meeting_link }}">Join Meeting</a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="table-container">
+            <h2>Completed Meetings</h2>
+            <div class="table-responsive">
+                <table id="completed-meetings" class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Subject</th>
+                            <th>Class Name</th>
+                            <th>Date</th>
+                            <th>Start Time</th>
+                            <th>End Time</th>
+                            <th>Event Details</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for meeting in completed_meetings %}
+                        <tr>
+                            <td>{{ meeting.subject_name.name }}</td>
+                            <td>{{ meeting.class_name }}</td>
+                            <td>{{ meeting.meeting_date|date:"Y-m-d" }}</td>
+                            <td>{{ meeting.starttime|time:"h:i A" }}</td>
+                            <td>{{ meeting.endtime|time:"h:i A" }}</td>
+                            <td class="event-details">{{ meeting.event_details }}</td>
+                            <td>Completed</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

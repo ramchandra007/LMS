@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Invoice</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 5px;
+            font-size: 15px;
+        }
+        header {
+            background-color: #DFF5FF;
+            padding: 5px;
+            text-align: center;
+        }
+        .downheader {
+            background-color: #333A73;
+            height: 20px;
+        }
+        .invoice-box {
+            max-width: 100%;
+            margin: auto;
+            padding: 10px;
+        }
+        .invoice-box table {
+            width: 100%;
+            line-height: inherit;
+            text-align: left;
+            border-collapse: collapse;
+        }
+        .invoice-box table td {
+            padding: 8px;
+            vertical-align: top;
+        }
+        .invoice-box table tr.heading td {
+            background: #eee;
+            border-bottom: 1px solid #ddd;
+            font-weight: bold;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h2>Invoice of the Payment</h2>
+    </header>
+    <div class="downheader"></div>
+    <div class="invoice-box">
+        <table cellpadding="0" cellspacing="0">
+            <tr class="information">
+                <td colspan="5">
+                    <table>
+                        <tr>
+                            <td>
+                                Payment ID: {{ payment_id }} <br>
+                                Date of Issue: {{ transaction_date }}<br>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr class="information">
+                <td colspan="10">
+                    <table>
+                        <tr>
+                            <td>
+                                <strong>Paid To:</strong> <br>
+                                Admin Name: {{ organizationname }}<br>
+                            </td>
+                            <td>
+                                <strong>Billed To: </strong> <br>
+                                Student Name: {{ firstname }} <br>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr class="information">
+                <td colspan="10">
+                    <table>
+                        <tr>
+                            <td>Payment Status:</td>
+                            <td>{{ payment_status }}</td>
+                        </tr>
+                        <tr>
+                            <td>Amount Paid in this Transaction:</td>
+                            <td style="font-weight: bold;">{{ amount_paid_transaction }}</td>
+                        </tr>
+                        <tr>
+                            <td>Total Fee Amount:</td>
+                            <td>{{ total_amount }}</td>
+                        </tr>
+                        <tr>
+                            <td>Discount on Fee:</td>
+                            <td>{{ discount_percentage }}%</td>
+                        </tr>
+                    </table>
+                    <br>
+                    <table border="1">
+                        <tr style="background-color: #333131; border-bottom: 1px solid #ddd; font-weight: bold; color: #DFF5FF;">
+                            <td>Description of Fees</td>
+                            <td>Amount</td>
+                        </tr>
+                        <tr>
+                            <td>Tuition Fee</td>
+                            <td>{{ discounted_total_amount }}</td>
+                        </tr>
+                        <tr>
+                            <td>Total Amount Paid</td>
+                            <td>{{ amt }}</td>
+                        </tr>
+                        <tr>
+                            <td>Remaining Balance</td>
+                            <td>{{ remaining_balance }}</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+        <p style="font-weight: bold; text-align: right;">Total Amount Due: {{ remaining_balance }}</p>
+        <br><br>
+        <p style="text-align: right; font-weight: bold;">Signature</p>
+    </div>
+    <div class="footer">
+        Developtrees | email @ info@Developtrees.com
+    </div>
+</body>
+</html>

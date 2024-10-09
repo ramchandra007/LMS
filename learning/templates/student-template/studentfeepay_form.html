@@ -1,0 +1,301 @@
+{% extends 'student-template/student_sidebar.html' %}
+{% block main_content %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Fee Payment Form</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <style>
+        body {
+            background: linear-gradient(#E3F4F4, white);
+            height: 800px;
+    
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 1300px;
+            margin: auto;
+            margin-top: 50px;
+            overflow: auto;
+            
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        label {
+            font-weight: bold;
+        }
+ h2 {
+            text-align: center;
+            margin-bottom: 50px;
+            color: white; /* Set the text color to white */
+            background-color: #468585; /* Set the background color */
+            padding: 15px;
+            border-radius: 8px;
+        }
+        #feeTable th{
+            background-color: #C4DFDF;
+        }
+        .btn{
+            background-color: #468585;
+            font-size: large;
+            background-color: #468585; 
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+        }
+        
+        .modal{
+            padding-top: 20px;
+        }
+        .table-det{
+        background: #f0eded;
+        border-radius: 2px;
+        border: 1px solid #070707;
+        overflow: hidden;
+        padding: 10px;
+        width: 100%;
+        padding: 20px;
+    }
+
+    .table-det thead th {
+      background-color: #B4D6CD;
+      color: #0a0a0a;
+      text-align: center;
+      font-weight: bold;
+      border: 2px solid #070707;
+      padding: 20px;
+    }
+    .table-det tbody td {
+      color: #0a0a0a;
+      text-align: center;
+      border: 2px solid #070707;
+      padding: 20px;
+    }
+    @media (max-width: 950px) {
+        .modal-dialog {
+            max-width: 100%;
+            margin: 10px;
+        }
+        .modal-content {
+            padding: 10px;
+        }
+        .modal-header, .modal-body, .modal-footer {
+            padding: 10px;
+        }
+        .modal-title {
+            font-size: 1.2rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .modal-dialog {
+            margin: 5px;
+        }
+        .modal-title {
+            font-size: 1rem;
+        }
+        .modal-body {
+            overflow-x: auto;
+            
+            
+        }
+        .table-det {
+            width: 100%;
+            font-size: 1rem;
+            padding-top: 10px;
+        }
+        .table-det thead th, .table-det tbody td {
+            padding: 8px;
+        }
+    }
+
+    /* Ensuring the table fits within the modal */
+    .table-responsive {
+        overflow-x: auto;
+    }
+    .table-det {
+        width: 100%;
+        table-layout: auto;
+    } 
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>STUDENT  FEE   PAYMENT FORM</h2>
+    <table id="feeTable" border="2" class="table table-bordered table-hover table-animated table-striped">
+        <thead>
+            <tr>
+                <th>Amount</th>
+                <th>Terms</th>
+                <th>Amount Paid</th>
+                <th>Term 1</th>
+                <th>Term 2</th>
+                <th>Term 3</th>
+                <th>Term 4</th>
+                <th>Term 5</th>
+                <th>Term 6</th>
+                <th>Term 7</th>
+                <th>Term 8</th>
+                <th>Remaining Balance</th>
+                <th>Discount Percentage</th>
+                <th>Pay</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for payment in fee_payments %}
+        <tr>
+            <td>{{ payment.amount }}</td>
+            <td>{{ payment.terms }}</td>
+            <td>{{ payment.amountpaid }}</td>
+            <td>{% if payment.term1 == 0 %}Paid{% else %}{{ payment.term1 }}{% endif %}</td>
+            <td>{% if payment.term2 == 0 %}Paid{% else %}{{ payment.term2 }}{% endif %}</td>
+            <td>{% if payment.term3 == 0 %}Paid{% else %}{{ payment.term3 }}{% endif %}</td>
+            <td>{% if payment.term4 == 0 %}Paid{% else %}{{ payment.term4 }}{% endif %}</td>
+            <td>{% if payment.term5 == 0 %}Paid{% else %}{{ payment.term5 }}{% endif %}</td>
+            <td>{% if payment.term6 == 0 %}Paid{% else %}{{ payment.term6 }}{% endif %}</td>
+            <td>{% if payment.term7 == 0 %}Paid{% else %}{{ payment.term7 }}{% endif %}</td>
+            <td>{% if payment.term8 == 0 %}Paid{% else %}{{ payment.term8 }}{% endif %}</td>
+            <td>{{ payment.balance }}</td>
+            <td>{{ payment.discount_percentage }}%</td>
+            <td>
+                {% if payment.balance == 0 %}
+                    <button style="background-color: grey;" disabled>
+                        <span style="color: #f8f9fa; text-decoration: none;">Paid</span>
+                    </button>
+                {% else %}
+                    <button style="background-color: green;">
+                        <a style="color: #f8f9fa; text-decoration: none;" href="/studentpayfee_edit/{{ payment.id }}">Pay</a>
+                    </button>
+                {% endif %}
+            </td>                
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+<br><br>
+<!-- Existing HTML for the page -->
+
+<!-- Modal Trigger (Example) -->
+<button type="button" class="btn btn-info" data-toggle="modal" data-target="#paymentDetailsModal">
+    View Transaction Details
+</button>
+
+<!-- Payment Details Modal -->
+<div class="modal fade" id="paymentDetailsModal" tabindex="-1" role="dialog" aria-labelledby="paymentDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="paymentDetailsModalLabel">Payment Details</h5>
+                <h3></h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                {% if razorpay_transactions %}
+                    <table class="table-det">
+                        <thead>
+                            <tr>
+                                <th>Fee Payment ID</th>
+                                <th>Payment ID</th>
+                                <th>Amount</th>
+                                <th>Created At</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for payment in razorpay_transactions %}
+                                <tr>
+                                    <td>{{ payment.fee_payment.id }}</td>
+                                    <td>{{ payment.payment_id }}</td>
+                                    <td>{{ payment.amount }}</td>
+                                    <td>{{ payment.created_at }}</td>
+                                    <td>
+                                        <form method="post" action="{% url 'download_receipt2' payment.id %}">
+                                            {% csrf_token %}
+                                            <button type="submit" name="download_receipt" class="btn btn-primary">View Receipt</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p>No transactions found for this student.</p>
+                {% endif %}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</div>
+
+
+</div>
+
+</body>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var table = document.getElementById('feeTable');
+        var rows = table.rows;
+        var colsToHide = [];
+
+        // Loop through each column, except the first and the last three (updated for new discount column)
+        for (var i = 3; i <= 10; i++) { // Columns 3 to 10 are terms 1 to 8
+            var allEmpty = true;
+
+            // Check each cell in the column
+            for (var j = 1; j < rows.length; j++) {
+                var cellText = rows[j].cells[i].innerText.trim();
+                if (cellText !== '0' && cellText !== 'Paid' && cellText !== '' && cellText !== '0.0' && cellText !== 'None') {
+                    allEmpty = false;
+                    break;
+                }
+            }
+
+            // If all cells in this column are empty, add column index to colsToHide
+            if (allEmpty) {
+                colsToHide.push(i);
+            }
+        }
+
+        // Check the "Discount Percentage" column
+        var discountColumnIndex = 12; // 0-based index for the "Discount Percentage" column
+        var allDiscountsZero = true;
+        for (var j = 1; j < rows.length; j++) {
+            var discountText = rows[j].cells[discountColumnIndex].innerText.trim();
+            if (discountText !== '0.0%') {
+                allDiscountsZero = false;
+                break;
+            }
+        }
+        if (allDiscountsZero) {
+            colsToHide.push(discountColumnIndex);
+        }
+
+        // Hide the columns with all empty cells
+        colsToHide.forEach(function(colIndex) {
+            for (var k = 0; k < rows.length; k++) {
+                rows[k].cells[colIndex].style.display = 'none';
+            }
+        });
+    });
+</script>
+</html>
+{% endblock main_content %}

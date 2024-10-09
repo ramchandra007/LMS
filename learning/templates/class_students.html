@@ -1,0 +1,448 @@
+{% extends 'admin-template/adminsidebar.html' %}
+{% block main_content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class Students</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(to right, #fcfdfd);
+            margin: 0;
+            padding: 0;
+            font-size: medium;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #0a0a0a;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            overflow-y: auto;
+        }
+
+        .show-details-btn {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            text-decoration: none;
+        }
+
+        .show-details-btn:hover {
+            background-color: #0056b3;
+            color: #fff;
+        }
+
+        .show-details-btn-container {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .popup-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .popup {
+            background-color: #fdfbfb;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+            position: relative;
+            max-width: 80%;
+            max-height: 80%;
+            overflow-y: auto;
+            animation: slideIn 0.5s ease;
+        }
+
+        .popup table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 2px solid #0a0a0a;
+            margin-bottom: 20px;
+        }
+
+        .popup th, .popup td {
+            border: 1px solid #0b0b0b;
+            padding: 10px;
+            color: #060606;
+        }
+
+        .popup th {
+            background-color: #007bff;
+        }
+
+        strong {
+            color: rgb(12, 12, 11);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .student-search {
+            position: relative;
+            width: 300px;
+            height: 50px;
+            background-color: #37474F;
+            border-radius: 25px;
+            padding: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            animation: slideIn 0.5s ease;
+            margin-left: 70px;
+            text-align: left;
+        }
+
+        #searchInput {
+            border: none;
+            width: calc(100% - 40px);
+            margin-left: 10px;
+            font-size: 16px;
+            background-color: transparent;
+            color: #fff;
+            outline: none;
+        }
+
+        h1 {
+            color: #f70606;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 50vh;
+            margin: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+            color: #0b0b0b;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f3d707;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .round-bcircle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #f0f0f0;
+            margin: 20px;
+            margin-top: 10px;
+        }
+
+        .round-bcircle i, .round-bcircle span {
+            font-size: 24px;
+            color: #333;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            color: #aaa;
+            font-size: 16px;
+        }
+
+        .student-search {
+            position: relative;
+            display: inline-block;
+        }
+
+        .search-text {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            left: 60px;
+            color: #aaa;
+        }
+
+        input[type="text"] {
+            padding-left: 30px;
+        }
+
+        .search-icon {
+            cursor: pointer;
+        }
+
+        .message {
+            color: black;
+            display: none;
+            position: fixed;
+            top: 18%;
+            left: 20%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 10px;
+            border: 1px solid black;
+            border-radius: 20px;
+            z-index: 1000;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        /* Mobile Styles */
+        @media only screen and (max-width: 700px) {
+            .info-section {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+            }
+            .info-section table {
+                width: 90%;
+                min-width: 90%;
+            }
+            .info-section th, .info-section td {
+                display: block;
+                border: none;
+                padding: 5px;
+                text-align: left;
+                white-space: nowrap;
+            }
+            .info-section th {
+                background-color: #007bff;
+                color: #fff;
+            }
+            .show-details-btn-container {
+                display: flex;
+                flex-direction: row;
+                justify-content: center;
+                gap: 10px;
+            }
+        }
+
+        /* Desktop Styles */
+        @media only screen and (min-width: 700px) {
+            .info-section {
+                display: block;
+            }
+            .info-section table {
+                width: 90%;
+            }
+            .info-section th, .info-section td {
+                padding: 10px;
+                text-align: center;
+            }
+            .show-details-btn-container {
+                display: flex;
+                gap: 10px;
+                justify-content: center;
+            }
+        }
+        @media only screen and (max-width: 570px) {
+            .table-res {
+                margin-left: 190px;
+            }
+            
+        }
+    </style>
+</head>
+<body>
+    <div class="mid-content">
+        <div class="shift-header mar-top">
+            <a href="/attendance_stu/" class="round-bcircle">
+                <i class="fa-solid fa-angle-left"></i>
+            </a>
+        </div>
+    </div>
+    
+    <div class="student-search-container">
+        <div class="student-search">
+            <input type="text" id="searchInput" oninput="filterStudents()" placeholder="student names">
+            <i class="fa fa-search search-icon"></i>
+        </div>
+        <div class="message" id="message">Please search student names.</div>
+    </div>
+    <div class="overlay" id="overlay"></div>
+
+    <div class="container">
+        {% if student_data %}
+            <table class="table-res">
+                <thead>
+                    <tr>
+                        <th>Student Name</th>
+                        <th>Class</th>
+                        <th>First Login</th>
+                        <th>Last Logout</th>
+                        <th>Status</th>
+                        <th>Info</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for data in student_data %}
+                    <tr>
+                        <td>{{ data.student.first_name }} {{ data.student.last_name }}</td>
+                        <td>{{ selected_class.classes }}</td>
+                        {% if data.first_login %}
+                            <td>{{ data.first_login.login_time }}</td>
+                            <td>{% if data.last_logout %}{{ data.last_logout.logout_time }}{% else %}Shift in progress{% endif %}</td>
+                            <td>{{ data.status }}</td>
+                        {% else %}
+                            <td>No login record found</td>
+                            <td>No login record found</td>
+                            <td>Absent</td>
+                        {% endif %}
+                        <td class="show-details-btn-container">
+                            <button class="show-details-btn" onclick="showPopup('{{ data.student.id }}')">Day-Wise</button>
+                            <a class="show-details-btn" href="/combined/{{ data.student.id }}">Month-Wise</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <center><h1>No students are in this class</h1></center>
+        {% endif %}
+
+        {% for data in student_data %}
+        <div class="popup-container" id="popup-container-{{ data.student.id }}">
+            <div class="popup">
+                <span onclick="hidePopup('{{ data.student.id }}')">&times;<button style="margin-left: 600px;" class="btn btn-danger">Close</button></span>
+                <h2>Multiple login & logout Details</h2>
+                <h2>{{ data.student.first_name }} {{ data.student.last_name }}'s Details</h2>
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Login Time</th>
+                        <th>Logout Time</th>
+                        <th>Duration</th>
+                        <th>Percentage of Duration</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for entry in data.login_logout_entries %}
+                    <tr>
+                        <td>{{ entry.login_time }}</td>
+                        <td>{{ entry.logout_time }}</td>
+                        <td>{{ entry.get_total_duration }}</td>
+                        <td>{{ entry.percentage }}%</td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <p>Total Percentage of Duration: {{ data.total_percentage }}%</p>
+                <p>Total Shift Duration: {{ student_data.0.total_shift_duration }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <script>
+        function showPopup(studentId) {
+            var popupContainer = document.getElementById('popup-container-' + studentId);
+            if (popupContainer) {
+                popupContainer.style.display = 'flex';
+            }
+        }
+
+        function hidePopup(studentId) {
+            var popupContainer = document.getElementById('popup-container-' + studentId);
+            if (popupContainer) {
+                popupContainer.style.display = 'none';
+            }
+        }
+
+        function filterStudents() {
+            var input, filter, table, rows, name, i, message, overlay;
+            input = document.getElementById("searchInput");
+            filter = input.value.toUpperCase();
+            table = document.querySelector("table");
+            rows = table.getElementsByTagName("tr");
+            message = document.getElementById("message");
+            overlay = document.getElementById("overlay");
+
+            var hasSpecialCharsOrNumbers = /[^a-zA-Z\s]/.test(filter);
+
+            if (hasSpecialCharsOrNumbers) {
+                message.style.display = "block";
+                overlay.style.display = "block";
+            } else {
+                message.style.display = "none";
+                overlay.style.display = "none";
+            }
+
+            for (i = 0; i < rows.length; i++) {
+                name = rows[i].getElementsByTagName("td")[0];
+                if (name) {
+                    if (name.textContent.toUpperCase().indexOf(filter) > -1) {
+                        rows[i].style.display = "";
+                    } else {
+                        rows[i].style.display = "none";
+                    }
+                }
+            }
+        }
+
+        function closePopup() {
+            document.getElementById("message").style.display = "none";
+            document.getElementById("overlay").style.display = "none";
+        }
+    </script>
+</body>
+</html>
+{% endblock main_content %}

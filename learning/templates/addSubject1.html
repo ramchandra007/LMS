@@ -1,0 +1,42 @@
+{% extends 'hom4.html' %}
+{% block page_title %}Add Subject{% endblock page_title %}
+{% block main_content %}
+<div class="container py-5">
+  <h1 style="color:#007bff">Add Subject</h1>
+  {% if message %}
+    <div id="success-message" class="alert alert-success" role="alert">
+      {{ message }}
+    </div>
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        const successMessage = document.getElementById('success-message');
+        if (successMessage) {
+          setTimeout(() => {
+            successMessage.style.display = 'none';
+          }, 2000);
+        }
+      });
+    </script>
+  {% endif %}
+
+  <form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label for="name" class="form-label">Subject Name:</label>
+      <input type="text" id="name" class="form-control" name="name" placeholder="Enter Subject Name" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="school_id" class="form-label">Select School:</label>
+      <select id="school_id" class="form-control" name="school_id" required>
+        <option value="" disabled selected>Select a school</option>
+        {% for school in schools %}
+          <option value="{{ school.id }}">{{ school.organizationname }} (ID: {{ school.id }})</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+</div>
+{% endblock main_content %}

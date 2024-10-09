@@ -1,0 +1,333 @@
+{% extends 'hom4.html' %}
+{% block page_title %}{{page_title}}{% endblock page_title %}
+
+{% block main_content %}
+
+<html>
+    <head>
+        <title>Data</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js" integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <style>
+            body {
+                background-color: #f8f9fa;
+                padding: 20px;
+            }
+            h2 {
+                margin-top: 20px;
+                margin-bottom: 20px;
+                color: #343a40;
+            }
+            table {
+                background-color: #fff;
+                border-radius: 5px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                margin-bottom: 20px;
+            }
+            th, td {
+                text-align: center;
+                vertical-align: middle;
+            }
+            .table-border {
+                border: 2px solid #dee2e6;
+            }
+            .btn-custom {
+                margin-top: 10px;
+                margin-bottom: 20px;
+                background-color: #007bff;
+                color: white;
+                padding: 10px 20px;
+                border-radius: 5px;
+                text-decoration: none;
+            }
+            .btn-custom:hover {
+                background-color: #0056b3;
+                color: white;
+                text-decoration: none;
+            }
+            .btn-action {
+                font-size: 20px;
+                border: none;
+                background: none;
+            }
+            .btn-delete:hover {
+                animation: shake 0.5s;
+                animation-iteration-count: 2;
+            }
+            @keyframes shake {
+                0% { transform: translateX(0); }
+                25% { transform: translateX(-5px); }
+                50% { transform: translateX(5px); }
+                75% { transform: translateX(-5px); }
+                100% { transform: translateX(0); }
+            }
+            th{
+                color: white;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <center><h2>Fee Data List</h2></center>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead style="background-color: rgba(112, 106, 216, 0.8);">
+                        <tr>
+                            <th>Title</th>
+                            <th>Content</th>
+                            <th>Images</th>
+                            <th>Title1</th>
+                            <th>Content1</th>
+                            <th>Images1</th>
+                            <th>Update</th>
+                            <th>Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in k %}
+                        <tr>
+                            <td><h5>{{i.title}}</h5></td>
+                            <td>{{i.content}}</td>
+                            <td>{% if i.photo %}<img src="{{i.photo.url}}" class="img-fluid" style="max-width: 200px; height: auto;">{% endif %}</td>
+                            <td><h5>{{i.title1}}</h5></td>
+                            <td>{{i.content1}}</td>
+                            <td>{% if i.photo1 %}<img src="{{i.photo1.url}}" class="img-fluid" style="max-width: 200px; height: auto;">{% endif %}</td>
+                            <td>
+                                <form action="/edit_fee/{{i.id}}" method="get">
+                                    <button type="submit" style="color: green;" class="btn-action"><i class="fa fa-edit"></i> Update</button>
+                                </form>
+                            </td>
+                            <td>
+                                <form action="/delete_fee/{{i.id}}" method="get">
+                                    <button type="submit" style="color: red;" class="btn-action btn-delete"><i class="fa fa-trash-o"></i> Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <form action="/insert_fee/" method="get">
+                <button type="submit" class="btn btn-custom">Add New Element</button>
+            </form>
+
+            
+
+            <center><h2>Fee Data List</h2></center>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead style="background-color: rgba(112, 106, 216, 0.8);">
+                        <tr>
+                            <th>Card Title</th>
+                            <th>Card Content</th>
+                            <th>Card Photo</th>
+                            <th>Update</th>
+                            <th>Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in o %}
+                        <tr>
+                            <td><h5>{{i.cardtitle}}</h5></td>
+                            <td>{{i.cardcontent}}</td>
+                            <td>{% if i.cardphoto %}<img src="{{i.cardphoto.url}}" class="img-fluid" style="max-width: 200px; height: auto;">{% endif %}</td>
+                            <td>
+                                <form action="/cardedit_fee/{{i.id}}" method="get">
+                                    <button type="submit" style="color: green;" class="btn-action"><i class="fa fa-edit"></i> Update</button>
+                                </form>
+                            </td>
+                            <td>
+                                <form action="/carddelete_fee/{{i.id}}" method="get">
+                                    <button type="submit" style="color: red;" class="btn-action btn-delete"><i class="fa fa-trash-o"></i> Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <form action="/cardinsert_fee/" method="get">
+                <button type="submit" class="btn btn-custom">Add New Element</button>
+            </form>
+
+        <center><h2>Fee Data List</h2></center>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead style="background-color: rgba(112, 106, 216, 0.8);">
+                        <tr>
+                            <th>Image</th>
+                            <th>Update</th>
+                            <th>Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in p %}
+                        <tr>
+                            <td>{% if i.image %}<img src="{{i.image.url}}" class="img-fluid" style="max-width: 200px; height: auto;">{% endif %}</td>
+                            <td>
+                                <form action="/credit_fee/{{i.id}}" method="get">
+                                    <button type="submit" style="color: green;" class="btn-action"><i class="fa fa-edit"></i> Update</button>
+                                </form>
+                            </td>
+                            <td>
+                                <form action="/crdelete_fee/{{i.id}}" method="get">
+                                    <button type="submit" style="color: red;" class="btn-action btn-delete"><i class="fa fa-trash-o"></i> Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <form action="/crinsert_fee/" method="get">
+                <button type="submit" class="btn btn-custom">Add New Element</button>
+            </form>
+        </div>
+    </body>
+</html>
+
+{% endblock main_content %}
+
+
+
+
+
+<!-- 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" integrity="sha512-...." crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>employee monitoring List</title>
+
+<style>
+    body{
+        background-color:WhiteSmoke;
+        display: block;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+   
+    th, td {
+        padding: 10px;
+        text-align: left;
+        border: 1px solid #ddd; 
+    }
+
+    th {
+        background-color: #4CAF50; 
+        color: white;
+    }
+
+    td {
+        background-color: #f2f2f2; 
+    }
+</style>
+
+
+<center>
+<h2>Fee Management 1</h2>
+</center>
+
+<table border="1" class="table table-responsive">
+    <tr>
+                <th>Title</th>
+                <th>Content</th>
+                <th>Image</th>
+                <th>Title 1</th>
+                <th>Content 1</th>
+                <th>Images 1</th>
+                <th>Update</th>
+                <th>Delete</th>     
+    </tr>
+    {% for i in k %}
+    <tr>
+        <td><h2>{{i.title}}</h2></td>
+       
+        <td>{{i.content}}</td>
+        {% if i.photo %}
+        <td><img src="{{i.photo.url}}" width=200px height=100px></td>
+        {% else %}
+        {% endif %}
+        
+        <td><h2>{{i.title1}}</h2></td>
+        <td>{{i.content1}}</td>
+        {% if i.photo1 %}
+        <td><img src="{{i.photo1.url}}" width=200px height=100px></td>
+        {% else %}
+        {% endif %}
+        <td><a href="/edit/{{i.id}}" ><i class="fas fa-edit" style="color:blue;" ></i></a></td>
+
+        <td><a href="/delete_fee/{{i.id}}" ><i class="fas fa-trash-alt" style="color:red;"></i></a>
+        </td>
+        </tr>
+    {% endfor %}        
+    
+</table><br><br>
+<center>
+<h2>Fee Management 2</h2>
+</center>
+<table class="table table-responsive">
+    <tr>
+        <th>Image</th>
+        <th>Update</th>
+        <th>Delete</th>     
+    </tr>
+    {% for i in p %}
+    <tr>
+        {% if i.image %}
+        <td><img src="{{i.image.url}}" width=200px height=100px></td>
+        {% else %}
+        {% endif %}
+
+
+        
+        <td><a href="/credit_fee/{{i.id}}"><i class="fas fa-edit" style="color:blue;" ></i></a></td>
+
+        <td><a href="/crdelete_fee/{{i.id}}"><i class="fas fa-trash-alt" style="color:red;"></i></a></td>
+        </tr>
+    {% endfor %}  
+</table><br><br>
+
+<center>
+    <h2>Fee Management 3</h2>
+</center>
+
+
+    <table border="1" class="table table-responsive">
+        <tr>
+          
+                <th>Cardtitle</th>
+                <th>Cardcontent</th>
+                <th>Cardphoto</th>
+                <th>Update</th>
+                <th>Delete</th>     
+            
+        </tr>
+        {% for i in o %}
+        <tr>
+            <td><h2>{{i.cardtitle}}</h2></td>
+            <td>{{i.cardcontent}}</td>
+            {% if i.cardphoto %}
+            <td><img src="{{i.cardphoto.url}}" width=200px height=100px></td>
+            {% else %}
+            {% endif %} 
+
+            
+          <td><a href="/cardedit/{{i.id}}"><i class="fas fa-edit" style="color:blue;" ></i></a></td>
+
+            <td><a href="/carddelete_fee/{{i.id}}"><i class="fas fa-trash-alt" style="color:red;"></i></a></td>
+         </tr>
+        {% endfor %}  
+    </table>
+
+
+    
+
+        
+
+         -->

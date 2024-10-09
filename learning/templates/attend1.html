@@ -1,0 +1,124 @@
+{% extends 'admin-template/adminsidebar.html' %}
+{% block main_content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+  }
+
+  .container {
+    max-width: 800px;
+    margin: 50px auto;
+    text-align: center;
+  }
+
+  .heading {
+    font-size: 36px;
+    color: #333;
+    margin-bottom: 20px;
+  }
+
+  .button {
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 10px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+  }
+
+  .button:hover {
+    background-color: #45a049; /* Darker green */
+  }
+
+  table {
+    width: 50%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+
+  th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+
+  th {
+    background-color: #f2f2f2;
+  }
+
+  tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+
+  .edit-button {
+    background-color: #008CBA; /* Blue */
+    border: none;
+    color: white;
+    padding: 5px 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    margin: 2px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+  }
+
+  .edit-button:hover {
+    background-color: #007bb5; /* Darker blue */
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1 class="heading">Dashboard</h1>
+    <a href="{% url 'alldata1' %}">
+    <button class="button">Student</button>
+    </a>
+    <a href="{% url 'teacher_read' %}">
+    <button class="button">Teacher</button>
+    </a>
+    </div>
+    <center><table border="1"></center>
+      <thead>
+          <tr>
+              <th>Name</th>
+              <th>Start Time</th>
+              <th>End Time</th>
+              <th>Edit</th>
+          </tr>
+      </thead>
+      <tbody>
+          {% for shift in shifts %}
+          <tr>
+              <td>{{ shift.name }}</td>
+              <td>{{ shift.start_time }}</td>
+              <td>{{ shift.end_time }}</td>
+              <td>
+                  <a href="{% url 'shift_edit' shift.id %}" class="edit-button">Edit</a>
+              </td>
+          </tr>
+          {% endfor %}
+      </tbody>
+  </table>
+
+</body>
+</html>
+{% endblock main_content %}
+

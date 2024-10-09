@@ -1,0 +1,91 @@
+{% extends 'hom4.html' %}
+{% block page_title %}{{page_title}}{% endblock page_title %}
+
+{% block main_content %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>School List</title>
+    
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            
+            /* border: 1px solid black; */
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: rgba(122, 106, 216, 0.8);
+            color: white;
+        }
+        .btn-custom {
+                margin-top: 10px;
+                margin-bottom: 20px;
+                background-color: #007bff;
+                color: white;
+                padding: 10px 20px;
+                border-radius: 5px;
+                text-decoration: none;
+            }
+            .btn-action {
+                font-size: 20px;
+                border: none;
+                background: none;
+            }
+    </style>
+</head>
+<body>
+    <div class="container">
+    <center><h1>List of Schools</h1></center>
+    <table>
+        <thead>
+            <tr>
+                <th>Organization Name</th>
+                <th>Registration No</th>
+                <th>Address</th>
+                <th>Username</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>Image</th>
+                <th>Phone No</th>
+                <th>Strength</th>
+                <th>Customized</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for school in schools %}
+                <tr>
+                    <td>{{ school.organizationname }}</td>
+                    <td>{{ school.registrationno }}</td>
+                    <td>{{ school.address }}</td>
+                    <td>{{ school.username }}</td>
+                    <td>{{ school.first_name }}</td>
+                    <td>{{ school.last_name }}</td>
+                    <td>{{ school.email }}</td>
+                    <td>
+                        {% if school.image1 %}
+                            <img src="{{ school.image1.url }}" alt="{{ school.organizationname }} image" style="max-width: 100px; max-height: 100px;">
+                        {% endif %}
+                    </td>
+                    <td>{{ school.phoneno }}</td>
+                    <td>{{ school.strength }}</td>
+                    <td>
+                        <form action="/edit_school/{{i.id}}" method="get">
+                            <button type="submit" style="color: green;" class="btn-action"><i class="fa fa-edit"></i> Update</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+</body>
+</html>
+
+{% endblock main_content %}
+

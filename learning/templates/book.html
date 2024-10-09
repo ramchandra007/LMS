@@ -1,0 +1,197 @@
+
+                
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Meeting</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        h2 {
+            margin-top: 0;
+            color: #333;
+            text-align: center;
+        }
+        form {
+            margin-top: 20px;
+            position: relative; /* Added to position error message */
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #666;
+        }
+        input[type="text"],
+        input[type="date"],
+        input[type="time"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+        button[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            display: block;
+            margin: 0 auto;
+        }
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        .error-message {
+            color: red;
+            font-size: 12px;
+            position: absolute;
+            top: calc(100% + 5px);
+            left: 0;
+        }
+        .shake {
+            animation: shake 0.3s ease;
+        }
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(8px); }
+            50% { transform: translateX(-8px); }
+            75% { transform: translateX(4px); }
+            100% { transform: translateX(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Book a Meeting</h2>
+        <form id="meetingForm" method="POST" action="{% url 'create_meeting1' %}">
+            {% csrf_token %}
+            <label for="title">Title:</label>
+            <input type="text" id="title" name="title" required>
+            
+            <label for="eventdate">Event Date:</label>
+            <input type="date" id="eventdate" name="eventdate" value="{{ current_date }}" required>
+            <div id="dateError" class="error-message"></div>
+            
+            <label for="startingtime">Start Time:</label>
+            <input type="time" id="startingtime" name="startingtime" required>
+            <div id="startTimeError" class="error-message"></div>
+            
+            <label for="endtime">End Time:</label>
+            <input type="time" id="endtime" name="endtime" required>
+            <div id="endTimeError" class="error-message"></div>
+            
+            <button type="submit" id="submitBtn">Create Meeting</button>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var form = document.getElementById('meetingForm');
+            var eventDateInput = document.getElementById('eventdate');
+            var startingTimeInput = document.getElementById('startingtime');
+            var endTimeInput = document.getElementById('endtime');
+            var dateError = document.getElementById('dateError');
+            var startTimeError = document.getElementById('startTimeError');
+            var endTimeError = document.getElementById('endTimeError');
+            var submitButton = document.getElementById('submitBtn');
+
+            function validateDate() {
+                var selectedDate = new Date(eventDateInput.value);
+                var today = new Date();
+                today.setHours(0, 0, 0, 0);
+
+                if (selectedDate < today) {
+                    eventDateInput.classList.add('shake');
+                    eventDateInput.style.borderColor = 'red';
+                    dateError.textContent = 'Please select today\'s date or a future date.';
+                    dateError.style.display = 'block';
+
+                    return false;
+                } else {
+                    eventDateInput.classList.remove('shake');
+                    eventDateInput.style.borderColor = '';
+                    dateError.style.display = 'none';
+
+                    return true;
+                }
+            }
+
+            function validateStartTime() {
+                var selectedTime = startingTimeInput.value;
+                var now = new Date();
+                var hours = now.getHours();
+                var minutes = now.getMinutes();
+                var currentTime = hours.toString().padStart(2, '0') + ':' + minutes.toString().padStart(2, '0');
+
+                if (eventDateInput.value === now.toISOString().split('T')[0] && selectedTime < currentTime) {
+                    startingTimeInput.classList.add('shake');
+                    startingTimeInput.style.borderColor = 'red';
+                    startTimeError.textContent = 'Please select a time equal to or later than the current time.';
+                    startTimeError.style.display = 'block';
+
+                    return false;
+                } else {
+                    startingTimeInput.classList.remove('shake');
+                    startingTimeInput.style.borderColor = '';
+                    startTimeError.style.display = 'none';
+
+                    return true;
+                }
+            }
+
+            function validateEndTime() {
+                var startTime = startingTimeInput.value;
+                var endTime = endTimeInput.value;
+
+                if (endTime <= startTime) {
+                    endTimeInput.classList.add('shake');
+                    endTimeInput.style.borderColor = 'red';
+                    endTimeError.textContent = 'End time must be greater than start time.';
+                    endTimeError.style.display = 'block';
+
+                    return false;
+                } else {
+                    endTimeInput.classList.remove('shake');
+                    endTimeInput.style.borderColor = '';
+                    endTimeError.style.display = 'none';
+
+                    return true;
+                }
+            }
+
+            form.addEventListener('submit', function(event) {
+                if (!validateDate() || !validateStartTime() || !validateEndTime()) {
+                    event.preventDefault();
+                }
+            });
+
+            eventDateInput.addEventListener('change', validateDate);
+            startingTimeInput.addEventListener('change', validateStartTime);
+            endTimeInput.addEventListener('change', validateEndTime);
+        });
+    </script>
+</body>
+</html>

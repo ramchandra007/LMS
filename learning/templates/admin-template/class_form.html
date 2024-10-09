@@ -1,0 +1,536 @@
+{% extends 'admin-template/adminsidebar.html' %}
+{% block main_content %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Fee Payment Form</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+    <style>
+      body {
+            /* background-color: #f8f9fa; */
+           /* background-color: #c3ced8; */
+           background: linear-gradient(#DDF2FD, white);
+            background-blend-mode: multiply;
+            color: black;
+
+        }
+        h2 {
+             text-align: center;
+              color: rgb(9, 9, 9);
+             margin-bottom: 30px;
+             background-color: #7FA1C3; /* Light blue background */
+              padding: 10px; /* Adds padding inside the h2 for better readability */
+              border-radius: 0px; /* Optional: adds rounded corners */
+           }
+        .container {
+            padding: 15px;
+            margin-top: 30px;
+            margin-left: 20px;
+        }
+
+        h2 {
+            text-align: center;
+            color: rgb(9, 9, 9);
+            margin-bottom: 30px;
+            margin-left: 180px;
+        }
+        .btn{
+            margin-left: 150px;
+        }
+
+        label {
+            font-weight:bolder;
+            font-size: medium;
+        }
+
+        .alert-success {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 90%; /* Decreased size by 10% */
+        
+        }
+        
+            
+        .alert-success .icon {
+            font-size: 20px;
+            margin-right: 10px;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s, visibility 0.5s;
+        }
+
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .tick-mark-container {
+            position: relative;
+            width: 150px;
+            height: 150px;
+        }
+
+        .tick-mark-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .card {
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+            transition: 0.3s;
+            /* width: 125%; */
+            width: 112.5%; /* Decreased size by 10% */
+            border-radius: 5px;
+        }
+        
+        
+           
+        
+
+           
+        .container-card{
+            /* padding: 30px; */
+            padding: 27px;
+        }
+
+        .card:hover {
+            box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+        }
+       
+        @keyframes drawTick {
+            0% {
+                stroke-dasharray: 0, 100;
+            }
+            100% {
+                stroke-dasharray: 100, 0;
+            }
+        }
+
+        @keyframes rotateCircle {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(720deg);
+            }
+        }
+
+        .tick-mark-svg .tick {
+            stroke: #28a745;
+            stroke-width: 10;
+            fill: none;
+            stroke-linecap: round;
+            stroke-dasharray: 100;
+            stroke-dashoffset: 100;
+            animation: drawTick 2s ease-in-out forwards;
+        }
+
+        .tick-mark-svg .circle {
+            stroke: #ffffff;
+            stroke-width: 9;
+            fill: none;
+            stroke-dasharray: 282;
+            animation: rotateCircle 2s linear 1s forwards;
+            transform-origin: center;
+        }
+
+        .tick-mark-svg .designed-circle {
+            stroke: #28a745;
+            stroke-width: 4;
+            fill: none;
+            stroke-dasharray: 150;
+            animation: drawCircle 3s linear infinite;
+            transform-origin: center;
+        }
+
+        .loading-dots {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 200px;
+        }
+
+        .loading-dots div {
+            width: 10px;
+            height: 10px;
+            margin: 0 5px;
+            background-color: white;
+            border-radius: 50%;
+            opacity: 0.8;
+            animation: bounce 1.5s infinite ease-in-out;
+        }
+
+        .loading-dots div:nth-child(1) {
+            animation-delay: -0.3s;
+        }
+
+        .loading-dots div:nth-child(2) {
+            animation-delay: -0.15s;
+        }
+
+        @keyframes bounce {
+            0%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-25px);
+            }
+        }
+        @media (max-width: 767px) {
+            .col {
+                flex: 0 0 100%;
+                max-width: 100%;
+
+            }
+            .container{
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .loading-dots {
+                margin-top: 100px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Student Fee Assign Form</h2>
+        {% if messages %}
+            <div id="message-container">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div id="overlay" class="overlay">
+            <div class="tick-mark-container">
+                <svg class="tick-mark-svg" viewBox="0 0 100 100">
+                    <path class="tick" d="M20 55 L40 75 L80 25"></path>
+                    <circle class="circle" cx="50" cy="50" r="45"></circle>
+                    <circle class="designed-circle" cx="50" cy="50" r="45"></circle>
+                </svg>
+                <div class="loading-dots">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            // Function to hide messages after 3 seconds
+            setTimeout(function() {
+                var messageContainer = document.getElementById('message-container');
+                if (messageContainer) {
+                    messageContainer.style.display = 'none';
+                }
+            }, 2000); // 2000 milliseconds = 2 seconds
+
+            // Function to show the overlay with the tick mark and loading dots
+            function showOverlay() {
+                var overlay = document.getElementById('overlay');
+                overlay.classList.add('active');
+                setTimeout(function() {
+                    overlay.classList.remove('active');
+                }, 2000); // 2000 milliseconds = 2 seconds
+            }
+
+            // Show overlay if there is a success message
+            window.onload = function() {
+                var messages = document.querySelectorAll('.alert-success');
+                if (messages.length > 0) {
+                    showOverlay();
+                }
+            };
+        </script>
+
+        <div class="card">
+            <div class="container-card">
+                <form method="post" onsubmit="return validateForm()">
+                    {% csrf_token %}
+
+                    <div class="row">
+                        <div class="col">
+                            <label for="student_class">Class Name:<span class="text-danger">*</span></label>
+                            <select class="form-control" id="student_class" name="student_class" required>
+                                <option value="">---Select the Class---</option>
+                                {% for class_option in student_classes %}
+                                    <option value="{{ class_option.id }}">{{ class_option.classes }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col">
+                            <label for="amount">Total Amount:<span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="amount" name="amount" oninput="validateAmount(); calculateTermAmounts();" placeholder="Enter The Class Amount" required step="0.01">
+                            <div id="amount-error" class="text-danger"></div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col">
+                            <label for="terms">Terms:<span class="text-danger">*</span></label>
+                            <select id="terms" name="terms" class="form-control" onchange="calculateTerm();" required>
+                                <option value="" disabled selected>Select Term</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                            </select>
+                        </div>
+                    </div>
+                    <br>
+
+                    <div class="row" id="termAmountsContainer" style="display: none;">
+                        <!-- Term amounts will be displayed here -->
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group">
+                            <label for="discount">Discount Percentage (optional)</label>
+                            <input type="number" step="0.01" class="form-control" id="discount" name="discount" oninput="applyStudentDiscount(); calculateTermAmounts();" placeholder="Enter the discount percentage" min="0" max="100" value="0">
+                            <div id="discount-error" class="text-danger"></div>
+                        </div>
+                    </div>
+
+                    <div class="row" id="individualTermInputs" style="display: none;">
+                        <!-- Individual discounted term inputs will be appended here -->
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <label>Discounted Students:</label>
+                            <div id="student_checkboxes_container" class="form-control" style="height:auto;">
+                                <option value="">---Select the Student---</option>
+                                <!-- Checkboxes will be populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <br>
+                    <div class="row" id="termInputs" style="display: none;">
+                        <!-- Dynamic term inputs will be appended here -->
+                    </div>
+
+                    <br>
+                    <div class="row">
+                        <div class="col text-center">
+                            <button style="background-color: #6482AD; color: black; font-size: larger; font-weight: 500; " type="submit" class="btn btn-primary">Assign Class Fee</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <script defer>
+            $(document).ready(function() {
+                $('#student_class').change(function() {
+                    var classId = $(this).val();
+                    if (classId) {
+                        $.ajax({
+                            url: '{% url "fetch_students" %}',  // Make sure this URL is correct
+                            data: {
+                                'class_id': classId
+                            },
+                            dataType: 'json',
+                            success: function(data) {
+                                var select = $('#discounted_student_id');
+                                select.empty();
+                                select.append('<option value="">---Select the Student---</option>');
+                                $.each(data, function(index, student) {
+                                    select.append('<option value="' + student.id + '">' + student.name + '</option>');
+                                });
+
+                                // Populate checkboxes
+                                var checkboxContainer = $('#student_checkboxes_container');
+                                checkboxContainer.empty();
+                                $.each(data, function(index, student) {
+                                    var checkbox = $('<input>').attr({
+                                        type: 'checkbox',
+                                        id: 'student_' + student.id,
+                                        name: 'discounted_student_ids[]',
+                                        value: student.id
+                                    });
+                                    var label = $('<label>').attr('for', 'student_' + student.id).text(student.name);
+                                    checkboxContainer.append(checkbox).append(label).append('<br>');
+                                });
+                            }
+                        });
+                    } else {
+                        $('#discounted_student_id').empty().append('<option value="">---Select the Student---</option>');
+                        $('#student_checkboxes_container').empty();
+                    }
+                });
+            });
+
+            function validateForm() {
+                var amount = document.getElementById('amount').value;
+                var terms = document.getElementById('terms').value;
+                var amountError = document.getElementById('amount-error');
+
+                if (isNaN(amount) || amount <= 0) {
+                    amountError.innerText = "Please enter a valid positive amount.";
+                    return false;
+                }
+
+                amountError.innerText = "";
+
+                if (isNaN(terms) || terms < 1 || terms > 8) {
+                    alert("Please enter terms between 1 and 8.");
+                    return false;
+                }
+
+                return true;
+            }
+
+            function calculateTerm() {
+                var amount = parseFloat(document.getElementById('amount').value);
+                var terms = parseInt(document.getElementById('terms').value);
+                var termAmountsContainer = document.getElementById('termAmountsContainer');
+                termAmountsContainer.innerHTML = '';  // Clear previous term amounts
+
+                if (isNaN(amount) || amount <= 0 || isNaN(terms) || terms < 1 || terms > 8) {
+                    termAmountsContainer.style.display = 'none';
+                    return;
+                }
+
+                var termAmount = (amount / terms).toFixed(2);  // Calculate term amount
+                for (var i = 1; i <= terms; i++) {
+                    var colDiv = document.createElement('div');
+                    colDiv.className = 'col';
+
+                    var formGroupDiv = document.createElement('div');
+                    formGroupDiv.className = 'form-group';
+
+                    var label = document.createElement('label');
+                    label.textContent = 'Term ' + i;
+
+                    var input = document.createElement('input');
+                    input.type = 'text';
+                    input.className = 'form-control';
+                    input.value = termAmount;
+                    input.readOnly = true;  // Make the input read-only
+
+                    formGroupDiv.appendChild(label);
+                    formGroupDiv.appendChild(input);
+                    colDiv.appendChild(formGroupDiv);
+                    termAmountsContainer.appendChild(colDiv);
+                }
+                termAmountsContainer.style.display = 'flex';
+            }
+
+            function validateAmount() {
+                var amount = document.getElementById('amount').value;
+                var amountError = document.getElementById('amount-error');
+
+                if (isNaN(amount) || amount <= 0) {
+                    amountError.innerText = "Please enter a valid positive amount.";
+                } else {
+                    amountError.innerText = "";
+                }
+            }
+
+            function applyStudentDiscount() {
+                var terms = parseInt(document.getElementById('terms').value);
+                var discount = parseFloat(document.getElementById('discount').value) || 0;
+                var discountError = document.getElementById('discount-error');
+                var individualTermInputsContainer = document.getElementById('individualTermInputs');
+                individualTermInputsContainer.innerHTML = '';  // Clear previous inputs
+
+                if (discount > 100) {
+                    discountError.innerText = "Discount cannot exceed 100%.";
+                    return;
+                } else {
+                    discountError.innerText = "";
+                }
+                if (discount.toString().split('.')[1]?.length > 2) {
+                    discountError.innerText = "Discount cannot exceed two decimal places.";
+                    return;
+                }
+
+                var amount = parseFloat(document.getElementById('amount').value);
+                if (!isNaN(amount) && amount > 0 && terms >= 1 && terms <= 8) {
+                    var discountedAmount = amount * (1 - discount / 100);
+                    var amountPerTerm = (discountedAmount / terms).toFixed(2);
+
+                    for (var i = 1; i <= terms; i++) {
+                        var colDiv = document.createElement('div');
+                        colDiv.className = 'col';
+
+                        var formGroupDiv = document.createElement('div');
+                        formGroupDiv.className = 'form-group';
+
+                        var label = document.createElement('label');
+                        label.textContent = 'Discounted Term ' + i;
+
+                        var input = document.createElement('input');
+                        input.type = 'text';
+                        input.className = 'form-control';
+                        input.value = amountPerTerm;
+                        input.readOnly = true;  // Make the input read-only
+
+                        formGroupDiv.appendChild(label);
+                        formGroupDiv.appendChild(input);
+                        colDiv.appendChild(formGroupDiv);
+                        individualTermInputsContainer.appendChild(colDiv);
+                    }
+                    individualTermInputsContainer.style.display = 'flex';
+                }
+            }
+
+            function calculateTermAmounts() {
+                var amount = parseFloat(document.getElementById('amount').value);
+                var terms = parseInt(document.getElementById('terms').value);
+                var discount = parseFloat(document.getElementById('discount').value) || 0;
+                var individualTermInputsContainer = document.getElementById('individualTermInputs');
+
+                if (!isNaN(amount) && amount > 0 && terms >= 1 && terms <= 8) {
+                    var discountedAmount = amount * (1 - discount / 100);
+                    var amountPerTerm = (discountedAmount / terms).toFixed(2);
+
+                    individualTermInputsContainer.querySelectorAll('input').forEach(function(input, index) {
+                        input.value = amountPerTerm;
+                    });
+
+                    individualTermInputsContainer.style.display = 'flex'; // Always show the discounted amounts
+                }
+            }
+        </script>
+
+    </div>
+</body>
+
+</html>
+{% endblock %}
+
+
+
+
+
+

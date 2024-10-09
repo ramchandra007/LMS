@@ -1,0 +1,408 @@
+{% extends 'admin-template/adminsidebar.html' %}
+
+{% block main_content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Report</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css' rel='stylesheet' />
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js'></script>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/locales-all.min.js'></script>
+    <script src='https://code.jquery.com/jquery-3.6.0.min.js'></script>
+    <style>
+        table.attendance th, table.attendance td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: center;
+        }
+        .attendance .status-button {
+            border: none;
+            padding: 10px;
+            color: white;
+            cursor: pointer;
+        }
+        .attendance .absent-status {
+            background-color: red;
+        }
+        .attendance .half-day-status {
+            background-color: yellow;
+            color: black;
+        }
+        .attendance .full-day-status {
+            background-color: green;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to right, #7F7FD5, #86A8E7, #91EAE4);
+            color: #333;
+        }
+        table {
+            margin: 20px 0;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 2px solid #ddd;
+            background-color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 50%;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            font-size: 16px;
+        }
+        th {
+            font-weight: bold;
+            text-transform: uppercase;
+            text-align: center;
+            background: linear-gradient(to bottom, #4CAF50, #388E3C);
+            color: #fff;
+            border: 2px solid white;
+        }
+        .present, .half-day, .absent {
+            background: linear-gradient(to bottom, #4CAF50, #388E3C);
+            color: #fff;
+            border: none;
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+        .half-day {
+            background: linear-gradient(to bottom, #FFC107, #DAA520);
+            color: #333;
+        }
+        .absent {
+            background: linear-gradient(to bottom, #F44336, #D32F2F);
+        }
+        .present:hover, .half-day:hover, .absent:hover {
+            filter: brightness(1.2);
+        }
+        p {
+            text-align: center;
+            font-size: 18px;
+            margin-top: 20px;
+        }
+        .view-more {
+            background: linear-gradient(to bottom, #2196F3, #1565C0);
+            color: #fff;
+            border: none;
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .view-more:hover {
+            filter: brightness(1.2);
+        }
+        .prev-month-link, .next-month-link {
+            background: linear-gradient(to bottom, #2196F3, #1565C0);
+            color: #fff;
+            border: none;
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .calendar {
+            width: 40%;
+        }
+        .calendar td {
+            border: 1px solid black;
+            text-align: center;
+        }
+        .calendar th {
+            border: 1px solid white;
+            text-align: center;
+        }
+        .calendar .date {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        .calendar .percentage {
+            display: block;
+            font-size: 1em;
+            color: #444;
+        }
+        .fc-daygrid-day-number {
+            font-weight: bold;
+            font-size: 18px;
+            text-align: center;
+        }
+        .fc-daygrid-day-frame {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            height: 100%;
+            padding: 5px;
+        }
+        .fc-event-title {
+            color: red !important;
+            font-weight: bold !important;
+            text-align: center;
+            white-space: normal !important;
+            word-wrap: break-word !important;
+            word-break: break-word !important;
+            overflow-wrap: break-word !important;
+            margin: 2px;
+        }
+        .fc-event, .fc-event-dot, .fc-event-time, .fc-event-title {
+            background-color: transparent !important;
+            border: none !important;
+        }
+        .fc-event-main {
+            background-color: transparent !important;
+            color: inherit !important;
+        }
+        .fc-day-with-event .fc-daygrid-day-number {
+            color: red !important;
+        }
+        .round-bcircle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #f0f0f0;
+            margin-left: 10px;
+            margin: 20px;
+        }
+        .round-bcircle i, .round-bcircle span {
+            font-size: 24px;
+            color: #333;
+        }
+        #calendar-container {
+            width: 80%;
+            height: auto;
+            margin: 20px auto;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .fc-timegrid-slot-label[data-time="00:00"] {
+            color: white;
+        }
+        .fc-event-main {
+            background: none !important;
+        }
+        .fc-daygrid-day-top {
+            background-color: transparent !important;
+            border: none !important;
+        }
+        .fc-daygrid-event-dot {
+            display: none !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="mid-content">
+        <div class="shift-header mar-top">
+            <a href="/class_students/{{ student.className.id }}/" class="round-bcircle">
+                <i class="fa-solid fa-angle-left"></i>
+            </a>
+        </div>
+    </div>
+
+    <!-- <div id="count-box" style="position: absolute; top: 20px; right: 20px; text-align: right;">
+        <p>Total_Present: <span id="presentCount">0</span></p>
+        <p>Total_Absent: <span id="absentCount">0</span></p>
+        <p>Total_Half-Day: <span id="halfDayCount">0</span></p>
+        <p>Total_Working_Days: <span id="workingDayCount">0</span></p>
+    </div> -->
+    <center>
+        <table class="attendance">
+            <tr>
+                <th>Date</th>
+                <th>Percentage</th>
+                <th>Status</th>
+            </tr>
+            {% for date, data in attendance_data.items %}
+                <tr>
+                    <td>{{ date }}</td>
+                    <td>{{ data.percentage }}%</td>
+                    <td>
+                        <button style="border-radius: 10px;" class="status-button {% if data.status == 'Absent' %}absent-status{% elif data.status == 'Half Day' %}half-day-status{% else %}full-day-status{% endif %}">
+                            {{ data.status }}
+                        </button>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    
+        <div id="calendar-container">
+            <div id='calendar'></div>
+        </div>
+    </center>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                timeZone: 'UTC',
+                events: '/calendar/events/',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                editable: true,
+                selectable: true,
+                displayEventTime: false,
+                select: function (info) {
+                    var title = prompt('Enter Event Title:');
+                    if (title) {
+                        title = title.trim();
+                        fetch('/calendar/create_event/', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': '{{ csrf_token }}'
+                            },
+                            body: JSON.stringify({
+                                title: title,
+                                start: info.startStr,
+                                end: info.endStr
+                            })
+                        }).then(response => {
+                            if (response.ok) {
+                                calendar.refetchEvents();
+                                updateDayColors();
+                            } else {
+                                alert('Error: ' + response.statusText);
+                            }
+                        }).catch(error => {
+                            alert('Error: ' + error.message);
+                        });
+                    }
+                    calendar.unselect();
+                },
+                eventClick: function (info) {
+                    if (confirm('Delete this event?')) {
+                        fetch('/calendar/delete_event/', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': '{{ csrf_token }}'
+                            },
+                            body: JSON.stringify({
+                                event_id: info.event.id
+                            })
+                        }).then(response => {
+                            if (response.ok) {
+                                info.event.remove();
+                                updateDayColors();
+                            } else {
+                                alert('Error: ' + response.statusText);
+                            }
+                        }).catch(error => {
+                            alert('Error: ' + error.message);
+                        });
+                    } else {
+                        var title = prompt('Edit Event Title:', info.event.title);
+                        if (title !== null) {
+                            fetch('/calendar/update_event/', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRFToken': '{{ csrf_token }}'
+                                },
+                                body: JSON.stringify({
+                                    event_id: info.event.id,
+                                    title: title,
+                                    start: info.event.start.toISOString(),
+                                    end: info.event.end ? info.event.end.toISOString() : info.event.start.toISOString()
+                                })
+                            }).then(response => {
+                                if (response.ok) {
+                                    info.event.setProp('title', title);
+                                } else {
+                                    alert('Error: ' + response.statusText);
+                                }
+                            }).catch(error => {
+                                alert('Error: ' + error.message);
+                            });
+                        }
+                    }
+                },
+                eventDidMount: function (info) {
+                    var dayEl = info.el.querySelector('.fc-daygrid-day-frame');
+                    if (dayEl) {
+                        var titleEl = document.createElement('div');
+                        titleEl.classList.add('fc-event-title');
+                        titleEl.textContent = info.event.title;
+                        dayEl.appendChild(titleEl);
+                    }
+                    var dayCell = info.el.closest('.fc-daygrid-day');
+                    if (dayCell) {
+                        dayCell.classList.add('fc-day-with-event');
+                    }
+                },
+                dayCellDidMount: function (info) {
+                    if (info.date.getDay() === 0) {
+                        info.el.style.color = 'red';
+                    }
+                },
+                eventAfterAllRender: function () {
+                    updateDayColors();
+                },
+                eventSourceSuccess: function (events) {
+                    return events.filter(function (event) {
+                        var eventStart = new Date(event.start);
+                        var eventEnd = event.end ? new Date(event.end) : eventStart;
+                        var isSaturdayEvent = event.is_saturday_event;
+                        var isSunday = eventStart.getDay() === 0;
+                        return !(isSaturdayEvent && isSunday);
+                    });
+                }
+            });
+
+            calendar.render();
+
+            function updateDayColors() {
+                document.querySelectorAll('.fc-day').forEach(function (el) {
+                    el.classList.remove('fc-day-with-event');
+                    if (el.dataset.date && new Date(el.dataset.date).getDay() === 0) {
+                        el.style.color = 'red';
+                    }
+                });
+                calendar.getEvents().forEach(function (event) {
+                    var dayEl = calendarEl.querySelector('[data-date="' + event.startStr.split('T')[0] + '"]');
+                    if (dayEl) {
+                        dayEl.classList.add('fc-day-with-event');
+                    }
+                });
+            }
+
+            calendar.on('eventChange', function () {
+                updateDayColors();
+            });
+
+            calendar.on('eventRemove', function () {
+                updateDayColors();
+            });
+
+            calendar.on('eventAdd', function () {
+                updateDayColors();
+            });
+        });
+    </script>
+</body>
+</html>
+{% endblock %}

@@ -1,0 +1,178 @@
+{% extends 'admin-template/adminsidebar.html' %}
+{% block main_content %}
+
+<style>
+   
+    .container {
+        margin-top: 20px;
+        padding: 20px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+        font-family: 'Roboto', sans-serif;
+        font-weight: 700;
+        color: #343a40;
+        margin-bottom: 20px;
+    }
+
+    .table {
+        width: 100%;
+        margin-bottom: 20px;
+        border-collapse: separate;
+        border-spacing: 0;
+        border: 1px solid #dee2e6;
+    }
+
+    .table th, .table td {
+        padding: 15px;
+        vertical-align: middle;
+        text-align: center;
+        border-top: 1px solid #dee2e6;
+    }
+
+    .table th {
+        background-color: #343a40;
+        color: #ffffff;
+        font-family: 'Roboto', sans-serif;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    .badge-success {
+        background-color: #28a745;
+        color: #fff;
+        font-size: 14px;
+        padding: 5px 10px;
+        border-radius: 20px;
+    }
+
+    .badge-warning {
+        background-color: #ffc107;
+        color: #fff;
+        font-size: 14px;
+        padding: 5px 10px;
+        border-radius: 20px;
+    }
+
+    .badge-danger {
+        background-color: #dc3545;
+        color: #fff;
+        font-size: 14px;
+        padding: 5px 10px;
+        border-radius: 20px;
+    }
+
+    .btn {
+        display: inline-block;
+        font-size: 14px;
+        font-weight: 400;
+        padding: 8px 16px;
+        border: 1px solid transparent;
+        border-radius: 4px;
+        text-align: center;
+        vertical-align: middle;
+        cursor: pointer;
+        text-decoration: none;
+        transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+    }
+
+    .btn-sm {
+        font-size: 12px;
+        padding: 4px 8px;
+    }
+
+    .btn-success {
+        background-color: #28a745;
+        border-color: #28a745;
+        color: #fff;
+    }
+
+    .btn-success:hover {
+        background-color: #218838;
+        border-color: #1e7e34;
+    }
+
+    .btn-danger {
+        background-color: #dc3545;
+        border-color: #dc3545;
+        color: #fff;
+    }
+
+    .btn-danger:hover {
+        background-color: #c82333;
+        border-color: #bd2130;
+    }
+
+    .btn-warning {
+        background-color: #ffc107;
+        border-color: #ffc107;
+        color: #212529;
+    }
+
+    .btn-warning:hover {
+        background-color: #e0a800;
+        border-color: #d39e00;
+    }
+
+    .btn-info {
+        background-color: #17a2b8;
+        border-color: #17a2b8;
+        color: #fff;
+    }
+
+    .btn-info:hover {
+        background-color: #138496;
+        border-color: #117a8b;
+    }
+</style>
+
+
+<div class="container">
+    <h2 class="text-center">Late Login Requests</h2>
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>Student</th>
+                    <th>Class</th>
+                    <th>Date</th>
+                    <th>Reason</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for request in late_login_requests %}
+                <tr>
+                    <td>{{ request.student.first_name }} {{ request.student.last_name }}</td>
+                    <td>{{ request.student.className }}</td>
+                    <td>{{ request.date }}</td>
+                    <td>{{ request.reason }}</td>
+                    <td>
+                        {% if request.approved %}
+                            <span class="badge badge-success">Approved</span>
+                        {% elif request.rejected %}
+                            <span class="badge badge-danger">Rejected</span>
+                        {% else %}
+                            <span class="badge badge-warning">Pending</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'approve_late_login_request' request.id %}" class="btn btn-success btn-sm">Approve</a>
+                        <a href="{% url 'reject_late_login_request' request.id %}" class="btn btn-danger btn-sm">Reject</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

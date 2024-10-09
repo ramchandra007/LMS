@@ -1,0 +1,14 @@
+{
+    "type": "service_account",
+    "project_id": "erudite-acre-421411",
+    "private_key_id": "1156ed43b854cd871cfbfdfd4c670860453043dd",
+    "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC+OmIK3hzekMD9\nudHk2NlYudg1paeUWvx7c2pAjgdYXXSk/0N+LiFyPNqe0rNftQ/Ycmk4uHgggHCs\nTEehi7vbd0lp/H3ZSsz2iwReXzzsqXN6c736GkJLiyHb1BeZlKAkxiS9qexbGcpC\nmeIAXCs7srxgxIurV7ovpku/Mvd5I3OAEbt2UL0WG8d25Vo0vlJYLV7JbnaYihql\nZWDg4uczwFHZC/UgOtzRL/aalHvPeN5Zwt7lysYW2/FWewTF4/G8xBHatVCkkoSx\nh32S0yHNknFlZO74F5W0QQ1cxqiN9MBvy886ydIpG6J/DJX+tg05WkTdjEB0wXPy\nV7DIol7NAgMBAAECggEAA3BZQOKKiZB62KthCr7L0RGNAc1Elgc+DLpFp7SZl+Sa\nnPf7X57UXnUQq7HZ6cdDadGJquuUylugDdFUMyysQPerVVXp7YFvap6RPeaBWrLm\ngkZw3wJWA/kYK9nt8koQShHl7KLTgcMZ17Hh9skzw+DDjIlJEBgmJsHeGS8B78fm\n+VPZdy+vAH1gdBeFlyDNxXRCAMb/uSCl7CLWgQqSbaApWk0rK2jGXC0t/G4FaV0W\nXPhTR2YpssLou3VKDhOzcB35FNpve5FSVtldBXbyG+Hh/JuCFYHW08SsxdtMFVIN\noXq1rx8oLhl51GyKHKQxwIGyCZstxpkc5yXnkrl44QKBgQD+qeqJRdqZN0bRCoIH\nlV3LY7NMv4AJB4qQQy8eIRhiccFV0G7iXg3TImIdmOh53lDb5f3hC2fMBbIzjKK5\nTMP93zPxSuRjeFrhz5W44ZjNx5Q1qFsIrDqcUDbNoNRVnNaCDe++95Eln72wig8g\nvZwXbASbdIarpp62Dd9dZEz64QKBgQC/OelxKzB3x6ErekbCyhNaw9pJ/ukwHleH\nMGdHzJPNln2clq5dqswfP0xvX8XdBHEMpkqVOOFBEML/PDNC6bNsbE16U4a9GCoL\nGp8XirgEOCAT+2DwLbyZGq4+ifaM7wkvvGCXx9/aqwqpbhOnBYFgjk4JEXaCG8lI\n4hSqVgItbQKBgQDc71sLlu/MRxmIF/6xR5Ok9a1DY0xYCRPcjnzdPcci+R/LLFZW\ny1RhHQ5UMSlXOVmbPVBhonx9k1+Du3odGo1avf8ZUmkMJwlpqKdzSz0/IeviFVpN\nDuaWYDz7bpFoaPXsxNx/J9bj9k8iTtRLClTWOR9SIukHGDnPJf/nzTG/4QKBgBTH\n5FiKCwBZT2h8J0hv0V6hvg0giJLUGUr1taOV1dIXsprbvSMstnYG2PWZgNUd8HMh\ndyV0QvZhLe+yyRdSck8sDddnUFMoVxlR0UwrpQfAWawSO1yee8pfnePp9kMmjucD\nH7Qe4nLO95+l+LjD3mVx0YUmwqws/NjQyNIh+qaZAoGBAPKvcSR+47xM1veVX9L/\np8A/I1GNAKShdX3tIAAiuHS6p0fOk5TEqMa+5TusKW5a+f+uo5Z6azmOCPYgroPX\nrPUwmHGufQaHaOj1icmaJUcQV5NGdVqDm5qZr1XHC+adsgEGeb8YK9Uh5XHTDV1+\nV0YP0nOwRC4dk5vC8jeUnLnh\n-----END PRIVATE KEY-----\n",
+    "client_email": "fathima123@erudite-acre-421411.iam.gserviceaccount.com",
+    "client_id": "115766482548577355347",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/fathima123%40erudite-acre-421411.iam.gserviceaccount.com",
+    "universe_domain": "googleapis.com"
+  }
+  

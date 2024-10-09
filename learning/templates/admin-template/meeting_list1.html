@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meeting List</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      margin: 20px;
+      padding: 0;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 0 auto;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    th, td {
+      padding: 15px;
+      text-align: left;
+      white-space: normal; /* Allow wrapping */
+      overflow: visible; /* Show overflow text */
+      text-overflow: unset; /* Do not truncate text */
+    }
+
+    th {
+      background-color: #3498db;
+      color: #fff;
+      font-weight: bold;
+      border-bottom: 1px solid #ddd;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    .details,
+    .teacher,
+    .link {
+      margin-bottom: 5px;
+      color: #333; /* Text color for content */
+    }
+
+    a {
+      color: #007bff;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .details, .teacher, .link {
+      max-width: 300px; 
+    }
+  </style>
+</head>
+<body>
+  <center><h1>Meeting List</h1></center>
+  
+  {% for class_name, meetings in meetings_by_class.items %}
+    <h2>Class : {{ class_name }}</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Subject</th>
+          <th>Teacher</th>
+          <th>Event Details</th>
+          <th>Meeting Link</th> 
+        </tr>
+      </thead>
+      <tbody>
+        {% for meeting in meetings %}
+          <tr>
+            <td class="details">
+              {{ meeting.meeting_date }}
+            </td>
+            <td class="details">
+              {{ meeting.subject_name.name }}
+            </td>
+            <td class="teacher">
+              {{ meeting.Teacher_name.first_name }} {{ meeting.Teacher_name.last_name }}
+            </td>
+            <td class="link">
+              {{ meeting.event_details }}
+            </td>
+            <td class="link">
+              <a href="{{ meeting.meeting_link }}">{{ meeting.meeting_link }}</a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% endfor %}
+
+</body>
+</html>

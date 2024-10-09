@@ -1,0 +1,74 @@
+{% extends 'hom4.html' %}
+{% block main_content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Plans</title>
+    <style>
+        .card-container {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+        .card {
+            flex: 1;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 0 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+            max-width: 300px;
+        }
+        .card:hover {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-content">
+        <div class="card-container">
+            <div class="card" id="basic-card">
+                <h2>Basic Plans</h2>
+            </div>
+            <div class="card" id="premium-card">
+                <h2>Premium Plans</h2>
+            </div>
+            <div class="card" id="advanced-card">
+                <h2>Advanced Plans</h2>
+            </div>
+        </div>
+        <a href="{% url 'plans' %}"><button>plans</button></a>
+    </div>
+    <script>
+        function redirectToOrganizationPage(planType) {
+            fetch(`/plans/${planType}/`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.length > 0) {
+                        const url = data[0].url;  // Redirect to the first organization's page
+                        window.location.href = url;
+                    } else {
+                        alert('No data available.');
+                    }
+                })
+                .catch(error => console.error('Error fetching plan data:', error));
+        }
+
+        document.getElementById('basic-card').addEventListener('click', function() {
+            redirectToOrganizationPage('basic');
+        });
+
+        document.getElementById('premium-card').addEventListener('click', function() {
+            redirectToOrganizationPage('premium');
+        });
+
+        document.getElementById('advanced-card').addEventListener('click', function() {
+            redirectToOrganizationPage('advanced');
+        });
+    </script>
+</body>
+</html>
+{% endblock main_content %}
+

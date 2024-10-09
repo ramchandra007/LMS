@@ -1,0 +1,91 @@
+{% extends 'admin-template/adminsidebar.html' %}
+{% block main_content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Class</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+     body {
+            /* background-color: #f8f9fa; */
+           background-color: #c3ced8;
+        
+        }
+
+    .container {
+      padding: 1rem;
+    }
+    
+    h1 {
+      font-size: 1.5rem;
+      text-align: center;
+    }
+    
+    .alert-success {
+      color: #28a745;
+    }
+    
+    form {
+      background-color: #f8f9fa;
+      border-radius: 0.5rem;
+      padding: 1rem;
+    }
+    
+    .form-label {
+      font-weight: bold;
+    }
+    
+    .form-control {
+      border-color: #ced4da;
+    }
+    
+    .btn-primary {
+      background-color: #007bff;
+      border-color: #007bff;
+      margin-top: 1rem;
+      margin-left: 9%;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <form method="post" class="p-md-5 border rounded-3 custom-form">
+        {% csrf_token %}
+        <h1 class="text-center">Add Class</h1>
+        {% if message %}
+          <div id="success-message" class="alert alert-success mt-3" role="alert">
+            {{ message }}
+          </div>
+        {% endif %}
+        <div class="form-group">
+          <label for="form4Example1">Add Class</label>
+          <input type="text" id="form4Example1" class="form-control" name="classes" placeholder="Add Class" required>
+        </div>
+        <div class="text-center">
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const successMessage = document.getElementById("success-message");
+    if (successMessage) {
+      setTimeout(function() {
+        successMessage.style.display = 'none';
+      }, 3000);
+    }
+  });
+</script>
+
+</body>
+</html>
+
+{% endblock main_content %}
